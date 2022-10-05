@@ -1,0 +1,20 @@
+Package: SGC
+Type: Package
+Title:  Self-training Gene Clustering
+Version: 0.1.0
+Author: Niloofar Aghaieabiane and Ioannis koutis
+Maintainer: Niloofar Aghaieabiane <niloofar.aghaieabiane@njit.edu>
+Description: A pipeline for gene co-expression network construction and analysis.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:AnnotationDbi, ggplot2, expm, caret, plyr, dplyr, GO.db, annotate, 
+        genefilter, GOstats, RColorBrewer, xtable, Rgraphviz, reshape2, openxlsx,
+        ggridges, DescTools, methods
+Depends: R (>= 3.5.0)
+BiocViews: Pipeline, Classification, Clustering, DimensionReduction, 
+            RNASeq, Visualization, Transcriptomics, GeneExpression, DNAMicrorray,
+            mRNAMicroarray, Network, NetworkEnrichment, Pathways, GraphAndNetwork
+URL: https://github.com/na396/SGC
+Suggests: knitr
+VignetteBuilder: knitr

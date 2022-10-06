@@ -1,1 +1,531 @@
+---
+title: "SGC package manual"
+author: "Niloofar Aghaieabiane"
+date: "`r Sys.Date()`"
+output:
+    BiocStyle::html_document:
+        toc: true
+
+vignette: >
+  %\VignetteIndexEntry{SGC package manual}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r knitr-options, echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+opts_chunk$set(fig.align = 'center', fig.width = 6, fig.height = 6, dev = 'png')
+```
+
+# Introduction
+Self-training Gene Clustering (`SGC`) is a pipeline for gene co-expression network construction and analysis. The goal in these networks is to group the genes in a way that those with similar expression pattern fall within the same network cluster, commonly called module. `SGC` consists of multiple novel steps that enable the computation of highly enriched modules in an unsupervised manner. But unlike all existing frameworks, it further incorporates a novel step that leverages Gene Ontology (GO) information in a semi-supervised clustering method that further improves the quality of the computed modules. `SGC` results in highly enrichmened modules. Preprint of manuscript describing `SGC` in details is available
+in [here](https://arxiv.org/abs/2209.10545). 
+
+
+## `SGC` Pipeline Parameters and Workflow
+
+`SGC` is based on `5` main steps to produce the final modules.
+Each step offers parameters that can be adjusted by the user as follow. Each step 
+is implemented in a single function.
+
+1. __Network Construction__ step (`adjacencyMatrix` function)
+    * `calibration`: boolean, default FALSE, if TRUE `SGC` performs calibration step
+    for more information see [link](https://www.frontiersin.org/articles/10.3389/fbinf.2021.704817/full).
+    * `norm`: boolean, default TRUE, if TRUE `SGC` divides each genes (rows) by its norm2.
+    * `tom`: boolean, default TRUE, if TRUE `SGC` adds TOM to the network.
+    * `saveAdja`: boolean, default FALSE, if TRUE, the adjacency matrix will be saved .
+    * `adjaNameFile`: string indicates the name of file for saving adjacency matrix.
+    * `hm`: string indicates the name of file for saving adjacency matrix heat map.
+    * `seed`: an integer for random state, default is NULL
+
+2. __Network Clustering__ step (`clustering` function) 
+    * `kopt`: an integer, default NULL, denotes the optimal number of clusters k by the user.
+    * `method`:  either "relativeGap", "secondOrderGap", "additiveGap", or NULL, 
+    default NULL. Defines the method for number of cluster.
+    * `func.GO`: a function for gene ontology validation, default is sum.
+    * `func.conduct`: a function for conductance validation, default is min.
+    * `maxIter`: an integer, identifies the maximum number of iteration in kmeans.
+    * `numStart`: an integer, identifies the number of start in kmeans.
+    * `saveOrig`:	boolean, default TRUE, if TRUE, keeps the transformed matrix.
+    * `n_egvec`:	either "all" or an integer, default = 100, indicates the 
+    number of columns of transformed matrix to be kept.
+    * `sil`: boolean, default FALSE, if TRUE, calculates silhouette index per gene.
+    * `seed`: an integer for random state, default is NULL.
+    at the end of this step, initial clusters are produced.
+    
+3. __Gene Ontology Enrichment__ step (`geneOntology` function)
+    * `direction`: test direction, default c("over", "under"), for over-represented, or under-represented                  GO terms
+    * `ontology`: GO ontologies, default c("BP", "CC", "MF"), BP: Biological Process, CC: Cellular                         Component, MF: Molecular Function.
+    * `hgCutoff`: a numeric value in (0,1) as the p-value baseline, default 0.05, GO terms smaller than                `hgCutoff` value are kept.
+    * `cond`: boolean, default TRUE, if TRUE conditional hypergeometric test is performed.
+    
+4. __Gene Semi-labeling__ step (`semiLabeling` function)
+    * `cutoff`: a numeric in (0, 1) default NULL, is a base line for GO term significancy to identify remarkable and unremarkable genes.
+    * `percent`: a number in (0,1) default 0.1, indicate the percentile for finding top GO terms.
+    * `stp`: a number in (0,1) default 0.01, indicates increasing value to be added to `percent` parameter.
+    
+5. __Semi-supervised Classification__ step (`semiSupevised` function)
+    * `model`: either "knn" or "lr" for classification model, knn: k nearest neighbors, lr: logistic                 regression.
+    * `kn`: an integer default NULL indicating the number of neighbors in knn, 
+            if `kn` is NULL, then `kn` = 20 : (20 + 2 * k) if 2 * k < 30 otherwise 20 : 30, 
+            where k is the number of remarkable cluster.
+    * `seed`: an integer for random state, default NULL.
+    at the end of this step, final modules are produced.
+    
+At the end, `SGC` performs on more Gene Ontology Enrichment on the final modules.
+
+Detailed of the steps are available in the manuscript in [SGC](https://arxiv.org/abs/2209.10545). 
+In __Network Construction__, user can identify of any of steps to be
+added to the network. In __Network Clustering__, If `kopt` is not null, 
+`SGC` will find clusters based on `kopt`. Otherwise, if `method` is not null, 
+`SGC` will pick k based on the selected method. Otherwise, if `geneID` and 
+`annotation_db` is null, `SGC` will determine the optimal method and its 
+corresponding number of cluster based on conductance validation. It picks a 
+method that `func.conduct` (default min) on its cluster is minimum. Otherwise, 
+`SGC` will use gene ontology validation (by default) to find the optimal method and its 
+corresponding number of clusters. To this end, it performs gene ontology enrichment 
+on the cluster with minimum conductance index per method and pick the one that 
+has the maximum `func.GO` (default sum)  over -log10 of p-values. In 
+__Gene Semi-labeling__ step, if `cutoff` is not NULL, `SGC` considers genes 
+associated to GO terms more significant than$~$`cutoff`$~$ as remarkable. Otherwise, 
+`SGC` collects all GO terms from all clusters and picks the `percent` (default 0.1)
+mot significant GO terms among them. If Genes associated to these significant terms 
+come from more than a single cluster, `SGC` takes these genes as remarkable. 
+Otherwise, it adds$~$`stp`$~$to$~$`percent`$~$and repeat this process until remarkable genes 
+come from at least two clusters. In __Semi-supervised Classification__ 
+remarkable clusters are the clusters that have at least one remarkable gene.
+
+
+
+## `SGC` installation
+To install `SGC` please visit [here](https://github.com/na396/SGC).
+
+## `SGC` Input
+
+`SGC` has three main input; gene expression, geneID, and genome wide annotation
+database.
+
+
+* __expData__ is a matrix or a dataframe of size `m*n` where `m` and `n` are the number of genes and samples respectively and it can be either DNA-microarray or RNA-seq . In another words, in `expData`, rows and columns correspond to genes and samples respectively and the entry `i,j` is an expression value for gene `i` in sample `j`. `SGC` does not perform any normalization or correction for batch effects and it is assumed that these 
+preprocessing steps have been already performed. 
+
+
+* __geneID__ is a vector of size `m` where entry at index `i` denotes the 
+gene identifier for gene `i`. Note that there is one-to-one correspondence 
+between the rows in `expData` and `geneID` vector where index `i` in `geneId` 
+indicates the gene identifier for row `i` in `expData`.
+
+* __annotation_db__ the name of a genome wide annotation package of the organism 
+of interest for gene ontology (GO) enrichment step. `annotation_db` must be 
+installed by user prior using `SGC`.
+
+Here, are some important `annotation_db` along with its corresponding identifiers.
+
+|organism                     | annotation_db  | gene identifier         |
+|:----------------------------|:--------------:|:---------------------   | 
+|Homo sapiens (Hs)            | org.Hs.eg.db   | Entrez Gene identifiers |
+|Drosophila melanogaster (Dm) | org.Dm.eg.db   | Entrez Gene identifiers |
+|Rattus norvegicus (Rn)       | org.Rn.eg.db   | Entrez Gene identifiers |
+|Mus musculus (Mm)            | org.Mm.eg.db   | Entrez Gene identifiers |
+|Arabidopsis thaliana (At)    | org.At.tair.db | TAIR identifiers        |
+
+
+Note that genes:
+* must have expression values across all samples (i.e. no missing value).
+* must have non-zero variance across all the samples.
+* must have exactly one unique identifier, say geneID.
+* must have GO annotation.
+
+
+Note that `SGC` depends on [GOstats](https://bioconductor.org/packages/release/bioc/html/GOstats.html) 
+for GO enrichment, thus (_geneID_) and (_annotation_db_) must be compatible to 
+this package standard.
+
+### `SGC` Input Example
+
+For illustrative purposes we will use an example of a expression matrix provided with `SGC`. 
+This data originally represent 5000 genes in 57 samples for Homo sapiens, 
+for more information see ([Cheng et al.](https://www.sciencedirect.com/science/article/abs/pii/S0010482520303061?via%3Dihub)). 
+Here SGC to ease the computation, 1500 genes that have the most variance selected with 5 samples have been selected . We call this matrix cheng, and rownames in this matrix shows the gene Entrez ids of its corresponding row. 
+`annotation_db` is org.Hs.eg.db, and is required to be installed if is not, see
+[link](https://bioconductor.org/packages/release/data/annotation/html/org.Hs.eg.db.html). 
+
+
+```{r, message=FALSE, warning=FALSE}
+library(SGC)
+```
+
+Note that you need to the annotation_db installed on your system. In this exampel, you need to `org.Hs.eg.db` installed.
+
+```{r, message=FALSE, warning=FALSE}
+# library(org.Hs.eg.db)
+```
+
+
+Now, we are ready to create the three main inputs
+```{r, message=FALSE, warning=FALSE}
+print(paste0("data dimension is ", dim(cheng)))
+cheng[1:5, 1:5]
+expData = cheng
+geneID = rownames(cheng)
+annotation_db = "org.Hs.eg.db"
+```
+
+
+# Run `SGC`
+There are two options to run `SGC`. 
+1 `ezSGC` function: which implements all steps in a single function.
+2 use the function for each step sequentially.
+
+## Automatic Run, `ezSGC` Function
+
+`ezSGC` function implements the `SGC` pipeline in one function. Parameters are the same as 
+[here](## `SGC` Pipeline Parameters and Workflow) except `calib`
+corresponds to `calibration` parameter in 
+__Network Construction__  `method_k`, `f.GO`,  `f.conduct`, 
+`maxIteration`, `numberStart` parameters correspond to `method` , `func.GO`, 
+`func.conduct`, `maxIter`, `numStart` in __Network Clustering__ respectively. 
+`dir`, `onto`, `hgCut`, `condTest` correspond to `direction`, `ontology`, 
+`hgCutoff`, and `cond` in __Gene Ontology Enrichment__ respectively. `semilabel` 
+also is a boolean parameter, that if is FALSE, `SGC` will stop after initial clusters. For full parameter description, see the help document.
+
+
+Below shows how to call this function. I set the `sil` parameter to TRUE to get the gene silhouette index.
+
+```{r, message=TRUE, warning=FALSE}
+sgc = ezSGC(expData = expData, geneID, annotation_db = annotation_db, sil = TRUE, seed = 123)
+```
+As it is seen, `SGC` print out information of each step. 
+In this example, there are three potential number of clusters, 2, 3, and 5, and based on gene ontology validation, 2 is selected as the optimal number of cluster.
+
+> We found out `SGC` performs well with default parameters in most of cases. 
+However, users have option to change the setting according to their need. 
+For instance, there are cases that `calib` increases the final module enrichment. 
+Similarly, adding TOM is not always helpful. By default `SGC` assumes that user 
+does not know the exact number of cluster, nor does it know the method for it. 
+Therefore, it uses gene ontology validation to identify the initial clusters. 
+We highly recommend users to perform `SGC` on the three potential metod 
+"relativeGap", "secondOrderGap", "additiveGap".
+
+`SGC` allows user to visualize the result. `SGC_ezPLOT` takes sgc result from 
+`ezSGC` function along with `expData` and `geneID`. It returns two files; excel 
+and pdf depending on the initial call. It also let users keep the plotting object 
+by setting keep = TRUE. Here, we set `silhouette_in` to TRUE to see the silhouette index pot.
+
+```{r, message=FALSE, warning=FALSE}
+message("PCA of expression data without label")
+sgc_plts = SGC_ezPLOT(sgc = sgc, expreData = expData, silhouette_index = TRUE, 
+                      keep = TRUE)
+```
+Note that in order to store files in xlsx format, excel must be installed on your system. 
+
+For the detailed parameter explanation visit the help document.
+
+
+## Step-By-Step Run, `SGC` In Detail
+
+The `ezSGC` function explained above is a wrapper that calls several other `SGC` 
+function in the following order. Now, we will go through each step in detail using [example data](### `SGC` Input Example).
+
+1.	`adjacencyMatrix` function, performs __Network Construction__ step
+2.	`clustering` function, performs __Network Clustering__ step
+3.	`geneOntology` function, performs __Gene Ontology Enrichment__ step (produces initial clusters)
+4.	`semiLabeling` function, performs __Semi-labeling__ step
+5.	`semiSupervised` function, performs __Semi-supervised__ step 
+6.	`geneOntology` function, performs __Gene Ontology Enrichment__ step (produces final modules)
+
+Here, we will skip the detail of function's input and output as it is described in the help document. `SGC` allows user to visualize the PCA of the input gene expression data using `SGC_plot_pca` function.
+
+```{r, message=TRUE, warning=FALSE}
+message("Plotting PCA of expression data")
+pl = SGC_plot_pca(m = expData, clusLabs = NULL, tit = "PCA plot", ps = .5)
+print(pl)
+```
+
+
+### `adjacencyMatrix` function
+__Network Construction__ step is implemented using `adjacencyMatrix` function. By default, this function divides each vector of genes by its norm 2 and used Gaussian kernel metric for similarity function. It then adds the information of the second order of the genes’ neighborhood in the form of TOM to the network. Code below shows how to use this function.
+
+```{r, message=TRUE, warning=TRUE}
+resAdja = adjacencyMatrix(expData = expData, seed = 123)
+```
+
+`resAdja` is the adjacency matrix of the gene co-expression network. We can visualize the heatmap of the adjacency matrix using$~$` SGC_plot_heatMap` function as follow.
+
+```{r, message=TRUE, warning=FALSE}
+message("Plotting adjacency heatmap")
+pl = SGC_plot_heatMap(m = resAdja, tit = "Adjacency Heatmap", 
+                 xname = "genes", yname = "genes")
+print(pl)
+
+```
+
+
+
+### `clustering` function
+__Network Clustering__ step is implemented using `clustering` function. This function takes the adjacency matrix , `geneID`, and `annotation_db`, and returns a list of following, depending on the initial call. I set the `sil` parameter to `TRUE` to get the silhouette index per gene.
+
+* `dropped.indices`: a vector of indices of dropped genes. Some genes may be noise, and therefore dropped throughout this function.
+* `geneID`:  a vector of geneID.
+* `method`: indicates the selected method for number of cluster.
+* `k`: number of clusters.
+* `Y`: transformed matrix with 2*k columns.
+* `X`: eigenvalues correspond to 2*k columns in Y.
+* `cluster`: an object of class "kmeans".
+* `clusterLabels`: a vector containing the cluster label per gene, there is a 1-to-1 correspondence                        between `geneID` and `clusterLabes`.
+* `conductance`: a list containing mean and median, and individual cluster conductance index for clusters                      per method. Index in `clusterConductance` field denotes the cluster label and the value                      shows the conductance index.
+* `cvGOdf`: a dataframe used for gene ontology validation. For each method, it returns the gene ontology enrichment result on the cluster with minimum conductance index.
+
+* `cv`: an string indicates the validation method for number of cluster, "cvGO": if gene ontology validation used, "cvConductance": if conductance validation used, "userMethod": if user defined the method, "userkopt": if user defines the kopt.
+
+* `clusterNumberPlot`: plotting object for relativeGap"", "secondOrderGap", and "additiveGap".
+
+* `silhouette`: a dataframe that indicates the silhouette indices for genes.
+
+* `original`: a list with matrix transformation and corresponding eigenvalues and `n_egvec`, where `n_egvec` top columns of transformation is kept.
+
+
+Code below shows how to use this function.
+
+```{r, message=TRUE, warning=FALSE}
+resClus = clustering(adjaMat = resAdja, geneID = geneID, annotation_db = annotation_db, 
+                     sil = TRUE, seed = 123)
+
+# lets drop noisy genes from expData
+geneID = resClus$geneID
+if(length(resClus$dropped.indices)>0 ){ expData = expData[-resClus$dropped.indices, ]}
+
+# removing the adjacency matrix
+rm(resAdja)
+```
+
+We saw that three methods ("relativeGap", "secondOrderGap", "additiveGap") resulted in three distinct potential number of clusters. `SGC` picked "secondOrderGap" after gene ontology validation which is 2. `cv` field is "cvGO", which indicates that k is found based on gene ontology validation. In `original` field, you can have the n_egvec first columns ( eigenvectors) and eigenvalues of the transformation matrix. This might be useful for further investigation.
+
+Now we can see the plot of PCA on the expression and transformed data with and without the labels as follow.
+
+```{r, message=TRUE, warning=FALSE}
+message("Plotting PCA of expression data with label")
+
+pl = SGC_plot_pca(m = expData, clusLabs = NULL, tit = "PCA plot without label", ps = .5)
+print(pl)
+
+```
+
+```{r, message=TRUE, warning=FALSE}
+message("Plptting PCA of transformed data without label")
+pl = SGC_plot_pca(m = resClus$Y, clusLabs = NULL, tit = "PCA plot without label", ps = .5)
+print(pl)
+
+```
+
+```{r, message=TRUE, warning=FALSE}
+message("Plotting PCA of transformed data with label")
+pl = SGC_plot_pca(m = resClus$Y, clusLabs = resClus$clusterLabels, tit = "PCA plot with label", ps = .5)
+print(pl)
+
+```
+
+
+In `resClus` the plotting objects of methods of number of clusters is available.
+
+```{r, message=TRUE, warning=FALSE}
+if(resClus$cv == "cvGO" || resClus$cv == "cvConductance"){
+      message("plotting relativeGap, secondOrderGap, additiveGap methods ...")
+
+      print(resClus$clusterNumberPlot$relativeGap)
+}
+```
+
+```{r, message=TRUE, warning=FALSE}
+if(resClus$cv == "cvGO" || resClus$cv == "cvConductance"){
+      message("plotting relativeGap, secondOrderGap, additiveGap methods ...")
+      print(resClus$clusterNumberPlot$secondOrderGap)
+}
+```
+
+
+```{r, message=TRUE, warning=FALSE}
+if(resClus$cv == "cvGO" || resClus$cv == "cvConductance"){
+      message("plotting relativeGap, secondOrderGap, additiveGap methods ...")
+      print(resClus$clusterNumberPlot$additiveGap)
+}
+```
+
+
+In `SGC`, we can illustrate the conductance index per cluster using `SGC_plot_conductance` function. Conductance index is calculated if both `kopt` and `method` are `NULL`. In other words, when one of these parameter is known, `SGC` does not need perform validation to find the cluster and therefore will skip the conductance computation.
+
+```{r, message=TRUE, warning=FALSE}
+# checking if conductance index is calculated
+if(resClus$cv == "cvGO" || resClus$cv == "cvConductance" ){
+    message("plotting cluster conductance index...")
+    pl = SGC_plot_conductance(conduct = resClus$conductance, 
+                         tit = "Cluster Conductance Index", 
+                         xname = "clusterLabel", yname = "conductance index")
+    print(pl)}
+
+```
+
+Previously, we saw that the cluster with minimum conductance index in method "relativeGap" has higher enrichment of corresponding clusters in other method. Interestingly, both clusters from "relativeGap" also have lower conductance index in compare with other method. This shows that gene ontology validation agrees with conductance validation, and clusters with lower conductance index have higher enrichment. We discussed bout this observation in detail [here](https://arxiv.org/abs/2209.10545)
+
+
+`SGC` also can plot the silhouette index per gene if `sil` parameter is `TRUE` 
+in `clustering` function.
+
+```{r, message=TRUE, warning=FALSE}
+# checking if silhouette index is calculated
+if(resClus$cv == "cvGO" || resClus$cv == "cvConductance" ){
+    message("plotting gene silhouette index...")
+    pl = SGC_plot_silhouette(resClus$silhouette, tit = "Gene Silhouette Index",
+                                     xname = "genes", yname = "silhouette index")
+    print(pl)}
+```
+
+Silhouette index ranges between -1 and 1, and the closer to 1, the better the gene is explained by the cluster. As it is seen, majority of genes have silhuette index very close to 1 which means that genes are well-described by the clusters. Interestingly, in worse case scenario, genes have zero silhouette index (the gap in the plot), and there is no negative index for any gene.
+
+
+### `geneOntology` function
+__Gene Ontology Enrichment__ step is implemented using `geneOntology` function. This function returns the gene ontology enrichment on the clusters as `GOresults`. It also returns the `FinalGOTermGenes` list which identifies the gene ID correspond to the GO terms found `GOresults`. Code below shows how to use this function.
+
+
+```{r, message=TRUE, warning=TRUE}
+resInitialGO = geneOntology(geneUniv = geneID, clusLab = resClus$clusterLabels, 
+                             annotation_db = annotation_db)
+
+head(resInitialGO$GOresults)
+```
+Above shows the enrichment dataframe returned from GOstats (link)[https://bioconductor.org/packages/release/bioc/html/GOstats.html] package. `clusterNum` indicates the cluster label.
+
+`SGC` has four functions that illustrate the gene ontology enrichment result; `SGC_plot_jitter`, `SGC_plot_density`, `SGC_plot_bar`, and `SGC_plot_pie`. Note that p-values are log-transformed, and therefore, The higher the point, the more signifcant the GO term is. 
+
+```{r, message=TRUE, warning=FALSE}
+message("plotting initial GO p-values jitters...")
+      pl = SGC_plot_jitter(df = resInitialGO$GOresults, tit = "Initial GO p-values",
+                      xname = "cluster", yname = "-log10 p-value", ps = 3)
+      print(pl)
+
+```
+
+
+
+
+```{r, message=TRUE, warning=FALSE}
+message("plotting initial GO p-values density")
+pl = SGC_plot_density(df = resInitialGO$GOresults, 
+                 tit = "Initial GO p-values Density",
+                 xname = "cluster", yname = "-log10 p-value")
+print(pl)
+```
+
+
+```{r, message=TRUE, warning=FALSE}
+message("plotting initial GO p-values mean")
+pl = SGC_plot_bar(df = resInitialGO$GOresults, tit = "Cluster Performance",
+                       xname = "cluster", yname = "mean -log10 p-value")
+print(pl)
+```
+
+
+```{r, message=TRUE, warning=FALSE}
+message("plotting initial GO p-values pie chart...")
+pl = SGC_plot_pie(df = resInitialGO$GOresults, tit = "Initial GO Analysis",
+            xname = "cluster", yname = "count", posx = 1.8)
+print(pl)
+```
+Label beside each segment indicates the log-transformed p-value of the most significant term found in that segment.
+
+### `semiLabeling` function
+__Gene Semi-labeling__ step is implemented using `semiLabeling` function. This function takes the result from `geneOntology` function and returns a dataframe that identify remarkable and unremarkable genes along with the cutoff value. Code below shows how to use this function. 
+
+```{r, message=TRUE, warning=TRUE}
+resSemiLabel = semiLabeling(geneID = geneID, 
+                            df_GO = resInitialGO$GOresults, 
+                            GOgenes = resInitialGO$FinalGOTermGenes)
+
+print(head(resSemiLabel$geneLabel))
+table(resSemiLabel$geneLabel$label)
+```
+Above table shows the number of remarkable genes per cluster, and we say a cluster is remarkable if it has at least one remarkable gene. Therefore, both clusters are remarkable here. However, we found out if a cluster is not remarkable, it will be wiped out through the __Semi-labeling__ and __Semi-supervised__ steps.
+
+
+
+### `semiSupervised` function
+__Gene Semi-supervised__ step is implemented using `semiSupervised` function. Final module labeling is available in `FinalLabeling` which is a dataframe of geneID with its corresponding semi-label and final label. Code below shows how to use this function. 
+
+
+```{r, message=TRUE, warning=TRUE}
+resSemiSupervised = semiSupervised(specExp = resClus$Y, geneLab = resSemiLabel$geneLabel, 
+                                   model = "knn", kn = NULL, seed = NULL)
+print(head(resSemiSupervised$FinalLabeling))
+print(table(resSemiSupervised$FinalLabeling$FinalLabel))
+```
+Table above shows the unremarkable gene assignment to each cluster.
+
+```{r, message=TRUE, warning=FALSE}
+message("Plotting PCA of transformed data with label")
+pl = SGC_plot_pca(m = expData, clusLabs = resSemiSupervised$FinalLabeling$FinalLabel, 
+             tit = "PCA plot with label", ps = .5)
+print(pl)
+```
+
+```{r, message=TRUE, warning=FALSE}
+message("Plotting PCA of transformed data with label")
+pl = SGC_plot_pca(m = resClus$Y, clusLabs = resSemiSupervised$FinalLabeling$FinalLabel, 
+             tit = "PCA plot with label", ps = .5)
+print(pl)
+```
+
+
+
+## `geneOntology` function
+Finally, __Gene Ontology Enrichment__ step is performed one more time on the final modules for module enrichment.
+
+
+```{r, message=TRUE, warning=TRUE}
+resFinalGO = geneOntology(geneUniv = geneID, clusLab = resSemiSupervised$FinalLabeling$FinalLabel, 
+                             annotation_db = annotation_db)
+
+head(resFinalGO$GOresults)
+
+```
+
+Now let see the corresponding plots for final module enrichment.
+```{r, message=TRUE, warning=FALSE}
+message("plotting final GO p-values jitters...")
+      pl = SGC_plot_jitter(df = resFinalGO$GOresults, tit = "Final GO p-values",
+                      xname = "module", yname = "-log10 p-value", ps = 3)
+      print(pl)
+
+```
+
+
+```{r, message=TRUE, warning=FALSE}
+message("plotting final GO p-values density...")
+pl = SGC_plot_density(df = resFinalGO$GOresults, 
+                 tit = "Final GO p-values Density",
+                 xname = "module", yname = "-log10 p-value")
+print(pl)
+```
+
+
+```{r, message=TRUE, warning=FALSE}
+message("plotting final GO p-values mean...")
+pl = SGC_plot_bar(df = resFinalGO$GOresults, tit = "Module Performance",
+                       xname = "module", yname = "mean -log10 p-value")
+print(pl)
+```
+
+
+```{r, message=TRUE, warning=FALSE}
+message("plotting final GO p-values pie xhart...")
+pl = SGC_plot_pie(df = resFinalGO$GOresults, tit = "Final GO Analysis",
+            xname = "module", yname = "count", posx = 1.9)
+print(pl)
+
+```
+
+Comparing this result with initial clusters, it is observed that gene ontology enrichment has been increased slightly. We found out, if all initial clusters are remarkable, like here, __Semi-labeling__ and __Semi-supervised__ steps does not change the genes cluster labels fundamentally, and initial clusters converges to final clusters. Otherwise, `SGC` will wiped out the non-significant clusters and increases the enrichment of remarkable clusters. And, final modules are different from initial clusters. You can see the detail in manuscript [SGC manuscript](https://arxiv.org/pdf/2209.10545.pdf).
 

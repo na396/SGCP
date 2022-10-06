@@ -1,0 +1,14 @@
+citHeader("To cite SGC in publications use:")
+
+citEntry(entry="article",
+         title = "SGC: A semi-supervised pipeline for gene clustering using self-training approach in gene co-expression networks",
+         author = personList( as.person("Niloofar Aghaieabiane"),
+                              as.person("Ioannis Koutis")),
+         year = 2022,
+         journal = "arXiv",
+         url = "https://arxiv.org/abs/2209.10545",
+         textVersion =
+             paste("Niloofar Aghaieabiane and Ioannis Koutis (2022):",
+                   "GC: A semi-supervised pipeline for gene clustering using self-training approach in gene co-expression networks",
+                   "arXiv, ",
+                   "URL:https://arxiv.org/abs/2209.10545" ) )

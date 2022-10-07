@@ -1,4 +1,4 @@
-Package: SGC
+Package: SGC-Pipeline
 Type: Package
 Title: SGC: A semi-supervised pipeline for gene clustering using self-training approach in gene co-expression networks
 Version: 0.99.0

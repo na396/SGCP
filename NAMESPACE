@@ -33,6 +33,9 @@ import("caret")
 
 importFrom(DescTools, MeanCI)
 
+importFrom(SummarizedExperiment, assay)
+importFrom(SummarizedExperiment, rowData)
+
 importFrom(plyr, rbind.fill)
 importFrom(plyr, join_all)
 importFrom(plyr, rbind.fill.matrix)

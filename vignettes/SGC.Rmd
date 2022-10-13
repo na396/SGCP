@@ -98,7 +98,13 @@ remarkable clusters are the clusters that have at least one remarkable gene.
 
 
 ## `SGC` installation
-To install `SGC` please visit [here](https://github.com/na396/SGC).
+To install `SGC` please visit [here](https://github.com/na396/SGC). Load `SGC` after installation.
+
+
+```{r, message=FALSE, warning=FALSE}
+library(SGC)
+```
+
 
 ## `SGC` Input
 
@@ -143,32 +149,47 @@ this package standard.
 
 ### `SGC` Input Example
 
-For illustrative purposes we will use an example of a expression matrix provided with `SGC`. 
+For illustrative purposes we will use an example of a gene expression provided with `SGC`.
 This data originally represent 5000 genes in 57 samples for Homo sapiens, 
-for more information see ([Cheng et al.](https://www.sciencedirect.com/science/article/abs/pii/S0010482520303061?via%3Dihub)). 
-Here SGC to ease the computation, 1500 genes that have the most variance selected with 5 samples have been selected . We call this matrix cheng, and rownames in this matrix shows the gene Entrez ids of its corresponding row. 
+for more information see ([Cheng et al.](https://www.sciencedirect.com/science/article/abs/pii/S0010482520303061?via%3Dihub)) Here, to ease the computation, 1000 genes that have the most variance selected with 5 samples have been selected. 
+
+
+The input example is organized as an object of `SummarizedExperiment`. The `assay` field shows the expression matrix in which rows and columns correspond to gene and samples respectively. `rowData` denotes the gene Entrez ids for the gene. Note that there is 1-to-1 correspondence between rows in `assays` and `rowData` fields, thus  `rowData` at index `i` shows the gene Entrez id for gene at row `i` in `assays` field. We call this object `cheng`. 
 `annotation_db` is org.Hs.eg.db, and is required to be installed if is not, see
-[link](https://bioconductor.org/packages/release/data/annotation/html/org.Hs.eg.db.html). 
+[link](https://bioconductor.org/packages/release/data/annotation/html/org.Hs.eg.db.html). Let look at the input example.
 
+```{r, message=TRUE, warning=FALSE}
+library(SummarizedExperiment)
+cheng
+message("gene expression...")
+head(assay(cheng))
 
-```{r, message=FALSE, warning=FALSE}
-library(SGC)
+message(" \n gene Entrez ids...")
+head(rowData(cheng))
 ```
 
-Note that you need to the annotation_db installed on your system. In this exampel, you need to `org.Hs.eg.db` installed.
-
-```{r, message=FALSE, warning=FALSE}
-# library(org.Hs.eg.db)
-```
+As it is seen, expression data have 1000 genes and 5 samples. Let's start.
 
 
-Now, we are ready to create the three main inputs
-```{r, message=FALSE, warning=FALSE}
-print(paste0("data dimension is ", dim(cheng)))
-cheng[1:5, 1:5]
-expData = cheng
-geneID = rownames(cheng)
-annotation_db = "org.Hs.eg.db"
+Now, we are ready to create the three main inputs. Using `assay` and `rowData` functions we can have access to expression matrix and gene Entrez ids respectively.
+```{r, message=TRUE, warning=FALSE}
+message("expData")
+expData = assay(cheng)
+head(expData)
+dim(expData)
+
+
+message(" \n geneID")
+geneID <- rowData(cheng)
+
+# geneID must be a vector, so convert the dataframe to a vector
+geneID <- geneID$geneEntrezID
+head(geneID)
+length(geneID)
+
+load(org.Hs.eg.db)
+annotation_db <- "org.Hs.eg.db"
+
 ```
 
 
@@ -193,7 +214,7 @@ also is a boolean parameter, that if is FALSE, `SGC` will stop after initial clu
 Below shows how to call this function. I set the `sil` parameter to TRUE to get the gene silhouette index.
 
 ```{r, message=TRUE, warning=FALSE}
-sgc = ezSGC(expData = expData, geneID, annotation_db = annotation_db, sil = TRUE, hm = NULL)
+sgc <- ezSGC(expData = expData, geneID = geneID, annotation_db = annotation_db, sil = TRUE, hm = NULL)
 ```
 As it is seen, `SGC` print out information of each step. 
 In this example, there are three potential number of clusters, 2, 3, and 5, and based on gene ontology validation, 2 is selected as the optimal number of cluster.
@@ -214,7 +235,7 @@ by setting keep = TRUE. Here, we set `silhouette_in` to TRUE to see the silhouet
 
 ```{r, message=FALSE, warning=FALSE}
 message("PCA of expression data without label")
-sgc_plts = SGC_ezPLOT(sgc = sgc, expreData = expData, silhouette_index = TRUE, 
+sgc_plts <- SGC_ezPLOT(sgc = sgc, expreData = expData, silhouette_index = TRUE, 
                       keep = TRUE)
 ```
 Note that in order to store files in xlsx format, excel must be installed on your system. 
@@ -238,7 +259,7 @@ Here, we will skip the detail of function's input and output as it is described 
 
 ```{r, message=TRUE, warning=FALSE}
 message("Plotting PCA of expression data")
-pl = SGC_plot_pca(m = expData, clusLabs = NULL, tit = "PCA plot", ps = .5)
+pl <- SGC_plot_pca(m = expData, clusLabs = NULL, tit = "PCA plot", ps = .5)
 print(pl)
 ```
 
@@ -247,14 +268,14 @@ print(pl)
 __Network Construction__ step is implemented using `adjacencyMatrix` function. By default, this function divides each vector of genes by its norm 2 and used Gaussian kernel metric for similarity function. It then adds the information of the second order of the genes’ neighborhood in the form of TOM to the network. Code below shows how to use this function.
 
 ```{r, message=TRUE, warning=TRUE}
-resAdja = adjacencyMatrix(expData = expData)
+resAdja <- adjacencyMatrix(expData = expData)
 ```
 
 `resAdja` is the adjacency matrix of the gene co-expression network. We can visualize the heatmap of the adjacency matrix using$~$` SGC_plot_heatMap` function as follow.
 
 ```{r, message=TRUE, warning=FALSE}
 message("Plotting adjacency heatmap")
-pl = SGC_plot_heatMap(m = resAdja, tit = "Adjacency Heatmap", 
+pl <- SGC_plot_heatMap(m = resAdja, tit = "Adjacency Heatmap", 
                  xname = "genes", yname = "genes")
 print(pl)
 
@@ -288,12 +309,12 @@ __Network Clustering__ step is implemented using `clustering` function. This fun
 Code below shows how to use this function.
 
 ```{r, message=TRUE, warning=FALSE}
-resClus = clustering(adjaMat = resAdja, geneID = geneID, annotation_db = annotation_db, 
+resClus <- clustering(adjaMat = resAdja, geneID = geneID, annotation_db = annotation_db, 
                      sil = TRUE)
 
 # lets drop noisy genes from expData
-geneID = resClus$geneID
-if(length(resClus$dropped.indices)>0 ){ expData = expData[-resClus$dropped.indices, ]}
+geneID <- resClus$geneID
+if(length(resClus$dropped.indices)>0 ){ expData <- expData[-resClus$dropped.indices, ]}
 
 # removing the adjacency matrix
 rm(resAdja)
@@ -306,21 +327,21 @@ Now we can see the plot of PCA on the expression and transformed data with and w
 ```{r, message=TRUE, warning=FALSE}
 message("Plotting PCA of expression data with label")
 
-pl = SGC_plot_pca(m = expData, clusLabs = NULL, tit = "PCA plot without label", ps = .5)
+pl <- SGC_plot_pca(m = expData, clusLabs = NULL, tit = "PCA plot without label", ps = .5)
 print(pl)
 
 ```
 
 ```{r, message=TRUE, warning=FALSE}
 message("Plptting PCA of transformed data without label")
-pl = SGC_plot_pca(m = resClus$Y, clusLabs = NULL, tit = "PCA plot without label", ps = .5)
+pl <- SGC_plot_pca(m = resClus$Y, clusLabs = NULL, tit = "PCA plot without label", ps = .5)
 print(pl)
 
 ```
 
 ```{r, message=TRUE, warning=FALSE}
 message("Plotting PCA of transformed data with label")
-pl = SGC_plot_pca(m = resClus$Y, clusLabs = resClus$clusterLabels, tit = "PCA plot with label", ps = .5)
+pl <- SGC_plot_pca(m = resClus$Y, clusLabs = resClus$clusterLabels, tit = "PCA plot with label", ps = .5)
 print(pl)
 
 ```
@@ -358,7 +379,7 @@ In `SGC`, we can illustrate the conductance index per cluster using `SGC_plot_co
 # checking if conductance index is calculated
 if(resClus$cv == "cvGO" || resClus$cv == "cvConductance" ){
     message("plotting cluster conductance index...")
-    pl = SGC_plot_conductance(conduct = resClus$conductance, 
+    pl <- SGC_plot_conductance(conduct = resClus$conductance, 
                          tit = "Cluster Conductance Index", 
                          xname = "clusterLabel", yname = "conductance index")
     print(pl)}
@@ -375,7 +396,7 @@ in `clustering` function.
 # checking if silhouette index is calculated
 if(resClus$cv == "cvGO" || resClus$cv == "cvConductance" ){
     message("plotting gene silhouette index...")
-    pl = SGC_plot_silhouette(resClus$silhouette, tit = "Gene Silhouette Index",
+    pl <- SGC_plot_silhouette(resClus$silhouette, tit = "Gene Silhouette Index",
                                      xname = "genes", yname = "silhouette index")
     print(pl)}
 ```
@@ -388,7 +409,7 @@ __Gene Ontology Enrichment__ step is implemented using `geneOntology` function. 
 
 
 ```{r, message=TRUE, warning=TRUE}
-resInitialGO = geneOntology(geneUniv = geneID, clusLab = resClus$clusterLabels, 
+resInitialGO <- geneOntology(geneUniv = geneID, clusLab = resClus$clusterLabels, 
                              annotation_db = annotation_db)
 
 head(resInitialGO$GOresults)
@@ -399,7 +420,7 @@ Above shows the enrichment dataframe returned from GOstats (link)[https://biocon
 
 ```{r, message=TRUE, warning=FALSE}
 message("plotting initial GO p-values jitters...")
-      pl = SGC_plot_jitter(df = resInitialGO$GOresults, tit = "Initial GO p-values",
+      pl <- SGC_plot_jitter(df = resInitialGO$GOresults, tit = "Initial GO p-values",
                       xname = "cluster", yname = "-log10 p-value", ps = 3)
       print(pl)
 
@@ -410,7 +431,7 @@ message("plotting initial GO p-values jitters...")
 
 ```{r, message=TRUE, warning=FALSE}
 message("plotting initial GO p-values density")
-pl = SGC_plot_density(df = resInitialGO$GOresults, 
+pl <- SGC_plot_density(df = resInitialGO$GOresults, 
                  tit = "Initial GO p-values Density",
                  xname = "cluster", yname = "-log10 p-value")
 print(pl)
@@ -419,7 +440,7 @@ print(pl)
 
 ```{r, message=TRUE, warning=FALSE}
 message("plotting initial GO p-values mean")
-pl = SGC_plot_bar(df = resInitialGO$GOresults, tit = "Cluster Performance",
+pl <- SGC_plot_bar(df = resInitialGO$GOresults, tit = "Cluster Performance",
                        xname = "cluster", yname = "mean -log10 p-value")
 print(pl)
 ```
@@ -427,7 +448,7 @@ print(pl)
 
 ```{r, message=TRUE, warning=FALSE}
 message("plotting initial GO p-values pie chart...")
-pl = SGC_plot_pie(df = resInitialGO$GOresults, tit = "Initial GO Analysis",
+pl <- SGC_plot_pie(df = resInitialGO$GOresults, tit = "Initial GO Analysis",
             xname = "cluster", yname = "count", posx = 1.8)
 print(pl)
 ```
@@ -437,7 +458,7 @@ Label beside each segment indicates the log-transformed p-value of the most sign
 __Gene Semi-labeling__ step is implemented using `semiLabeling` function. This function takes the result from `geneOntology` function and returns a dataframe that identify remarkable and unremarkable genes along with the cutoff value. Code below shows how to use this function. 
 
 ```{r, message=TRUE, warning=TRUE}
-resSemiLabel = semiLabeling(geneID = geneID, 
+resSemiLabel <- semiLabeling(geneID = geneID, 
                             df_GO = resInitialGO$GOresults, 
                             GOgenes = resInitialGO$FinalGOTermGenes)
 
@@ -453,8 +474,9 @@ __Gene Semi-supervised__ step is implemented using `semiSupervised` function. Fi
 
 
 ```{r, message=TRUE, warning=TRUE}
-resSemiSupervised = semiSupervised(specExp = resClus$Y, geneLab = resSemiLabel$geneLabel, 
-                                   model = "knn", kn = NULL)
+resSemiSupervised <- semiSupervised(specExp = resClus$Y, 
+                                    geneLab = resSemiLabel$geneLabel,
+                                    model = "knn", kn = NULL)
 print(head(resSemiSupervised$FinalLabeling))
 print(table(resSemiSupervised$FinalLabeling$FinalLabel))
 ```
@@ -462,14 +484,14 @@ Table above shows the unremarkable gene assignment to each cluster.
 
 ```{r, message=TRUE, warning=FALSE}
 message("Plotting PCA of transformed data with label")
-pl = SGC_plot_pca(m = expData, clusLabs = resSemiSupervised$FinalLabeling$FinalLabel, 
+pl <- SGC_plot_pca(m = expData, clusLabs = resSemiSupervised$FinalLabeling$FinalLabel, 
              tit = "PCA plot with label", ps = .5)
 print(pl)
 ```
 
 ```{r, message=TRUE, warning=FALSE}
 message("Plotting PCA of transformed data with label")
-pl = SGC_plot_pca(m = resClus$Y, clusLabs = resSemiSupervised$FinalLabeling$FinalLabel, 
+pl <- SGC_plot_pca(m = resClus$Y, clusLabs = resSemiSupervised$FinalLabeling$FinalLabel, 
              tit = "PCA plot with label", ps = .5)
 print(pl)
 ```
@@ -481,7 +503,7 @@ Finally, __Gene Ontology Enrichment__ step is performed one more time on the fin
 
 
 ```{r, message=TRUE, warning=TRUE}
-resFinalGO = geneOntology(geneUniv = geneID, clusLab = resSemiSupervised$FinalLabeling$FinalLabel, 
+resFinalGO <- geneOntology(geneUniv = geneID, clusLab = resSemiSupervised$FinalLabeling$FinalLabel, 
                              annotation_db = annotation_db)
 
 head(resFinalGO$GOresults)
@@ -491,7 +513,7 @@ head(resFinalGO$GOresults)
 Now let see the corresponding plots for final module enrichment.
 ```{r, message=TRUE, warning=FALSE}
 message("plotting final GO p-values jitters...")
-      pl = SGC_plot_jitter(df = resFinalGO$GOresults, tit = "Final GO p-values",
+      pl <- SGC_plot_jitter(df = resFinalGO$GOresults, tit = "Final GO p-values",
                       xname = "module", yname = "-log10 p-value", ps = 3)
       print(pl)
 
@@ -500,7 +522,7 @@ message("plotting final GO p-values jitters...")
 
 ```{r, message=TRUE, warning=FALSE}
 message("plotting final GO p-values density...")
-pl = SGC_plot_density(df = resFinalGO$GOresults, 
+pl <- SGC_plot_density(df = resFinalGO$GOresults, 
                  tit = "Final GO p-values Density",
                  xname = "module", yname = "-log10 p-value")
 print(pl)
@@ -509,7 +531,7 @@ print(pl)
 
 ```{r, message=TRUE, warning=FALSE}
 message("plotting final GO p-values mean...")
-pl = SGC_plot_bar(df = resFinalGO$GOresults, tit = "Module Performance",
+pl <- SGC_plot_bar(df = resFinalGO$GOresults, tit = "Module Performance",
                        xname = "module", yname = "mean -log10 p-value")
 print(pl)
 ```
@@ -517,7 +539,7 @@ print(pl)
 
 ```{r, message=TRUE, warning=FALSE}
 message("plotting final GO p-values pie xhart...")
-pl = SGC_plot_pie(df = resFinalGO$GOresults, tit = "Final GO Analysis",
+pl <- SGC_plot_pie(df = resFinalGO$GOresults, tit = "Final GO Analysis",
             xname = "module", yname = "count", posx = 1.9)
 print(pl)
 

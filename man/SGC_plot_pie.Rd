@@ -20,7 +20,7 @@
 
 
 \value{
-    returns the plot, an object of ggplot class.
+    returns the plot, an object of class \code{ggplot2}.
 }
 
 

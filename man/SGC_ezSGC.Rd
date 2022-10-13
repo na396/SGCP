@@ -107,19 +107,19 @@ final.GO fields, which contains the infromation of corresponding step.
     \item{semilabel}{Boolean, indicates if semilabeling step is performed.}
     \item{clusterLabels}{a dataframe with geneID and its corresponding initial
     and final labels.}
-    clustering
+    clustering field, a list of
     \item{dropped.indices}{dropped gene indices.}
     \item{geneID}{a vector of geneIDs.}
     \item{method}{indicates the selected method for number of cluster.}
     \item{k}{selected number of clusters.}
     \item{Y}{transformed matrix with 2*k columns.}
     \item{X}{eigenvalues correspond to 2*k columns in Y.}
-    \item{cluster}{object returned by kmeans function.}
+    \item{cluster}{object rof class \code{kmeans}.}
     \item{clusterLabels}{a vector containing the cluster label, for each gene,
                         there is a 1-to-1 correspondance between geneID and clusterLabes.}
     \item{conductance}{a list containing mean and median, and
-                       individual cluster conductance index for clusters in
-                       each method clusterConductance field cluster label
+                       individual cluster conductance index for clusters. In
+                       each method, the clusterConductance field denote the cluster label
                        with its corresponding conductance index.}
     \item{cvGOdf}{a dataframe used for gene ontology validation,
                 for each method, it shows the gene ontology enrichment
@@ -129,13 +129,13 @@ final.GO fields, which contains the infromation of corresponding step.
                 "cvConductance": if conductance validation used,
                 "userMethod": if user defined the method,
                 "userkopt": if user defines the kopt}
-    \item{clusterNumberPlot}{plotting object for
+    \item{clusterNumberPlot}{an objet of class \code{ggplot2} for
             relativeGap"", "secondOrderGap", and "additiveGap".}
     \item{silhouette}{a dataframe that indicates the silhouette for genes.}
     \item{original}{a list with matrix transformation and
                     corresponding eigenvalues and n_egvec,
                     where n_egvec top columns of tranformation is kept.}
-    initial.GO
+    initial.GO field, a list of
     \item{GOresults}{a dataframe containing the summary of the information of GOTerms,
                 clusterNum: indicates the cluster label,
                 GOtype: indicates the test directions plut ontology,
@@ -148,16 +148,16 @@ final.GO fields, which contains the infromation of corresponding step.
                 Term: description of the GO term.}
 
     \item{FinalGOTermGenes}{a list containing the geneIDs of each GOTerms per cluster.}
-    semiLabeling
+    semiLabeling field, a list of
     \item{cutoff}{a numeric in (0,1) which indicates the selected cutoff.}
     \item{geneLabel}{a dataframe containing the information of geneID and
                 its corresponding cluster label if is remarkable otherwise NA.}
-    semiSupervised
+    semiSupervised field which is a list of
     \item{semiSupervised}{an object of classification result.}
     \item{prediction}{a vector of predicted labels for unremarkable genes.}
     \item{FinalLabeling}{a dataframe of geneID with its corresponding semilabel
         and final label.}
-    final.GO
+    final.GO field, a list of
     \item{GOresults}{a dataframe containing the summary of the information of GOTerms,
                 clusterNum: indicates the cluster label,
                 GOtype: indicates the test directions plut ontology,

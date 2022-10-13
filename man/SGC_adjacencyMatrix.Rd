@@ -41,11 +41,11 @@
 
 \examples{
 ## create an adjcency matrix
-GeneExpression = matrix(runif(1000, 0,1), nrow = 200, ncol = 5)
-diag(GeneExpression) = 0
+GeneExpression <- matrix(runif(1000, 0,1), nrow = 200, ncol = 5)
+diag(GeneExpression) <- 0
 
 ## call the function
-adja = adjacencyMatrix(GeneExpression)
+adja <- adjacencyMatrix(GeneExpression)
 head(adja)
 }
 

@@ -62,7 +62,7 @@ a list containing some of the following depending on the initial call
     \item{k}{selected number of clusters.}
     \item{Y}{transformed matrix with 2*k columns.}
     \item{X}{eigenvalues correspond to 2*k columns in Y.}
-    \item{cluster}{an object of class "kmeans.}
+    \item{cluster}{an object of class \code{kmeans}.}
     \item{clusterLabels}{a vector containing the cluster label per gene, there is a 1-to-1 correspondence                        between geneID and clusterLabes}
     \item{conductance}{a list containing mean and median, and individual cluster conductance index for                              clusters per method. Index in `clusterConductance` field denotes the cluster label                          and the value shows the conductance index.}
     \item{cvGOdf}{a dataframe used for gene ontology validation. For each method, it returns the gene                           ontology enrichment result on the cluster with minimum conductance index.}
@@ -71,7 +71,7 @@ a list containing some of the following depending on the initial call
                 "cvConductance": if conductance validation used,
                 "userMethod": if user defined the method,
                 "userkopt": if user defines the kopt.}
-    \item{clusterNumberPlot}{plotting object for
+    \item{clusterNumberPlot}{an object of class \code{ggplot2} for
             relativeGap"", "secondOrderGap", and "additiveGap".}
     \item{silhouette}{a dataframe that indicates the silhouette for genes.}
     \item{original}{a list with matrix transformation and

@@ -40,8 +40,6 @@ importFrom(plyr, rbind.fill)
 importFrom(plyr, join_all)
 importFrom(plyr, rbind.fill.matrix)
 
-importFrom("grDevices", "dev.off", "graphics.off", "jpeg", "pdf",
-               "recordPlot", "replayPlot")
+importFrom("grDevices", "dev.off", "graphics.off", "jpeg", "pdf", "recordPlot", "replayPlot")
 importFrom("methods", "new")
-importFrom("stats", "aggregate", "complete.cases", "dist", "kmeans",
-           "median", "prcomp", "predict", "quantile", "sd", "setNames", "var")
+importFrom("stats", "aggregate", "complete.cases", "dist", "kmeans", "median", "prcomp", "predict", "quantile", "sd", "setNames", "var")

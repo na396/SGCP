@@ -11,7 +11,6 @@ Description: SGC is a semi-supervised pipeline for gene clustering in gene co-ex
              that further improves the quality of the computed modules.
 License: GPL-3
 Encoding: UTF-8
-LazyData: true
 Imports: ggplot2, expm, caret, plyr, dplyr, GO.db, annotate, SummarizedExperiment, 
         genefilter, GOstats, RColorBrewer, xtable, Rgraphviz, reshape2, openxlsx,
         ggridges, DescTools, org.Hs.eg.db, methods, grDevices, stats
@@ -25,3 +24,4 @@ NeedsCompilation: no
 URL: https://github.com/na396/SGC
 Date/Publication: 2022-10-06
 RoxygenNote: 7.2.1
+

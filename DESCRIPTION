@@ -21,7 +21,7 @@ biocViews: GeneExpression, GeneSetEnrichment, NetworkEnrichment, SystemsBiology,
              NeuralNetwork, Network, mRNAMicroarray, RNASeq, Visualization
 VignetteBuilder: knitr
 NeedsCompilation: no
-URL: https://github.com/na396/SGC
+URL: https://github.com/na396/SGCP
 Date/Publication: 2022-10-06
 RoxygenNote: 7.2.1
 

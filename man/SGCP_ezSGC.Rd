@@ -7,16 +7,16 @@
 }
 \usage{
     ezSGCP(expData, geneID, annotation_db, semilabel = TRUE,
-         calib = FALSE, norm = TRUE, tom = TRUE,
-         saveAdja = FALSE, adjaNameFile = "adjacency.Rdata",
-         hm = "adjaHeatMap.png",
-         kopt = NULL, method_k = NULL, f.GO = sum, f.conduct = min,
-         maxIteration = 1e8, numberStart = 1000,
-         saveOrig = TRUE, n_egvec = 100, sil = FALSE,
-         dir = c("over", "under"), onto = c("BP", "CC", "MF"),
-         hgCut = NULL, condTest = TRUE,
-         cutoff = NULL, percent = 0.10, stp = 0.01,
-         model = "knn", kn = NULL)
+        calib = FALSE, norm = TRUE, tom = TRUE,
+        saveAdja = FALSE, adjaNameFile = "adjacency.Rdata",
+        hm = "adjaHeatMap.png",
+        kopt = NULL, method_k = NULL, f.GO = sum, f.conduct = min,
+        maxIteration = 1e8, numberStart = 1000,
+        saveOrig = TRUE, n_egvec = 100, sil = FALSE,
+        dir = c("over", "under"), onto = c("BP", "CC", "MF"),
+        hgCut = NULL, condTest = TRUE,
+        cutoff = NULL, percent = 0.10, stp = 0.01,
+        model = "knn", kn = NULL)
 }
 \arguments{
     \item{expData}{a dataframe or matrix containing the expression data,
@@ -51,7 +51,7 @@
     \item{saveOrig}{boolean, default TRUE,
                     if TRUE, keeps the transformation matrix.}
     \item{n_egvec}{either "all" or an integer, default = 100,
-                   indicates the number of columns of transformation matrix to be kept}
+                indicates the number of columns of transformation matrix to be kept}
     \item{sil}{boolean, default FALSE,
             if TRUE, calculates silhouette index for each cluster.}
 
@@ -118,9 +118,9 @@ final.GO fields, which contains the infromation of corresponding step.
     \item{clusterLabels}{a vector containing the cluster label, for each gene,
                         there is a 1-to-1 correspondance between geneID and clusterLabes.}
     \item{conductance}{a list containing mean and median, and
-                       individual cluster conductance index for clusters. In
-                       each method, the clusterConductance field denote the cluster label
-                       with its corresponding conductance index.}
+                    individual cluster conductance index for clusters. In
+                    each method, the clusterConductance field denote the cluster label
+                    with its corresponding conductance index.}
     \item{cvGOdf}{a dataframe used for gene ontology validation,
                 for each method, it shows the gene ontology enrichment
                 on the cluster with smallest conductance index.}
@@ -184,3 +184,29 @@ final.GO fields, which contains the infromation of corresponding step.
     \href{https://github.com/na396/SGCP}{SGCP Toturial}
 }
 
+\examples{
+## load cheng dataset
+library(SGCP)
+library(SummarizedExperiment)
+data(cheng)
+expData <- assay(cheng)
+geneID <- rowData(cheng)
+geneID <- geneID$ENTREZID
+
+
+library(org.Hs.eg.db)
+
+# to call the function uncomment the following
+## res <- ezSGCP(expData = expData, geneID = geneID, annotation_db = "org.Hs.eg.db")
+## summary(res)
+## summary(res$clustering)
+## summary(res$initial.GO)
+## summary(res$semiLabeling)
+## summary(res$semiSupervised)
+## summary(res$final.GO)
+
+
+
+
+
+}

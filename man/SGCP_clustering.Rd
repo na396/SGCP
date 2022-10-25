@@ -18,39 +18,39 @@
                     and 0 diagonal.
                     It is the output of adjacencyMatrix function of SGCP.}
     \item{geneID}{a vector containing the genes IDs of size n
-                  where n is the number of genes.}
+                where n is the number of genes.}
     \item{annotation_db}{a string indicating the genomic wide annotation database.}
     \item{kopt}{an integer denotes the optimal number of clusters k by the user,
                 default is NULL.}
     \item{method}{method for identifying the number of clusters k, default NULL,
-                 either "relativeGap", "secondOrderGap", "additiveGap", or NULL.}
+                either "relativeGap", "secondOrderGap", "additiveGap", or NULL.}
     \item{func.GO}{a function for gene ontology validation,
                     default is sum.}
     \item{func.conduct}{a function for conductance validation,
                         default is min.}
     \item{maxIter}{an integer,
-                    identifies the maximum number of iteration for kmeans.}
+                identifies the maximum number of iteration for kmeans.}
     \item{numStart}{an integer,
                     identifies the number of start for kmeans.}
     \item{saveOrig}{boolean, default TRUE,
                     if TRUE, keeps the transformation matrix.}
     \item{n_egvec}{either "all" or an integer, default = 100,
-                   indicates the number of columns of transformation matrix to be kept}
+                indicates the number of columns of transformation matrix to be kept}
     \item{sil}{boolean, default FALSE,
             if TRUE, calculates silhouette index for each cluster.}
 
     }
 
 \details{
-If kopt is not null, SGCP will find clusters based on kopt. Otherwise,
+If \code{kopt} is not null, SGCP will find clusters based on \code{kopt}. Otherwise,
 if method is not null, SGCP will pick k based on the selected method. Otherwise,
-if geneID or annotation_db is null, SGCP will determine the optimal method and its
+if \code{geneID} or \code{annotation_db} is null, SGCP will determine the optimal method and its
 corresponding number of cluster based on condutance validation. It picks a method
-that func.conduct on its cluster is minimum. Otherwise,
+that \code{func.conduct} on its cluster is minimum. Otherwise,
 SGCP will use gene ontology validation (by default) to find the optimal method and
 its corresponding number of clusters. To this end, it will perform gene ontology
 enrichment on the cluster with minimum conductanc index per method and pick the
-one that has the maximum func.GO over -log10 of p-values.
+one that has the maximum \code{func.GO} over -log10 of p-values.
 
 }
 
@@ -89,5 +89,26 @@ a list containing some of the following depending on the initial call
     \href{https://github.com/na396/SGCP}{SGCP Toturial}
 }
 
+\examples{
+## load cheng dataset
+library(SGCP)
+library(SummarizedExperiment)
+
+data(cheng)
+expData <- assay(cheng)
+geneID <- rowData(cheng)
+geneID <- geneID$ENTREZID
+
+
+# to create the adjacency matrix un comment the following
+## resAdja <- adjacencyMatrix(expData = expData, hm = NULL)
+## resAdja[0:10, 0:5]
+
+# to perform clustering
+## library(org.Hs.eg.db)
+## resClus = clustering(adjaMat = resAdja, geneID = geneID,
+
+
+}
 
 \keyword{clustering}

@@ -32,3 +32,16 @@
     \code{\link{SGCP_ezPLOT}}
     \href{https://github.com/na396/SGCP}{SGCP Toturial}
 }
+\examples{
+
+library(SGCP)
+GeneExpression <- matrix(runif(200, 0,1), nrow = 40, ncol = 5)
+diag(GeneExpression) <- 0
+
+## call the function
+adja <- adjacencyMatrix(GeneExpression)
+
+plt <- SGCP_plot_heatMap(m =  adja)
+print(plt)
+
+}

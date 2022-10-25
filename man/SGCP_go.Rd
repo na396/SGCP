@@ -7,9 +7,9 @@
 }
 \usage{
     geneOntology(geneUniv, clusLab, annotation_db,
-                 direction = c("over", "under"),
-                 ontology = c("BP", "CC", "MF"), hgCutoff = NULL,
-                 cond = TRUE)
+                direction = c("over", "under"),
+                ontology = c("BP", "CC", "MF"), hgCutoff = NULL,
+                cond = TRUE)
 }
 \arguments{
     \item{geneUniv}{a vector of all the geneIDs in the expression dataset.}
@@ -51,6 +51,23 @@
 \seealso{
     \href{https://github.com/na396/SGCP}{SGCP Toturial}
     \href{https://bioconductor.org/packages/release/bioc/vignettes/GOstats/inst/doc/GOstatsHyperG.pdf}{GOstat Toturial}
+}
+
+\examples{
+
+library(SGCP)
+# load the output of clustering function
+data(resClus)
+
+# call the function
+library(org.Hs.eg.db)
+
+# to call the geneOntology uncomment the following
+## res <- geneOntology(geneUniv = resClus$geneID, clusLab = resClus$clusterLabels,
+##                     annotation_db = "org.Hs.eg.db")
+## summary(res$GOresults)
+## summary(res$FinalGOTermGenes)
+
 }
 
 

@@ -10,17 +10,17 @@
 }
 \arguments{
     \item{specExp}{matrix or dataframe with genes in rows and features in columns,
-                   this is Y matrix from clustering function output.}
+                this is Y matrix from clustering function output.}
     \item{geneLab}{a dataframe returned by semiLabeling function,
-                   contains the geneID and its corresponding label if is remarkable
-                   otherwise NA.}
+                contains the geneID and its corresponding label if is remarkable
+                otherwise NA.}
     \item{model}{either "knn" or "lr" for classification model,
                 knn: k nearest neighbors,
                 lr: logistic regression.}
     \item{kn}{an integer default NULL indicating the number of neighbors in knn,
-              if kn is NULL, then
-              kn = 20 : (20 + 2 * k) if 2 * k < 30 otherwise 20 : 30, where
-              k is the numbber of remarkable cluster}
+            if kn is NULL, then
+            kn = 20 : (20 + 2 * k) if 2 * k < 30 otherwise 20 : 30, where
+            k is the numbber of remarkable cluster}
 }
 
 \details{
@@ -46,5 +46,28 @@ remarkable clusters are the clusters that have at least one remarkable gene.
     \href{https://github.com/na396/SGCP}{SGCP Toturial}
 
 }
+\examples{
+
+library(SGCP)
+# load the output of clustering, gene ontology function
+
+data(resClus)
+data(resSemiLabel)
+
+# call the function
+
+res <- semiSupervised(specExp = resClus$Y, geneLab = resSemiLabel$geneLabel)
+
+# model summary
+summary(res$semiSupervised)
+
+# prediction label for unremarkable genes
+head(res$prediction)
+
+# semi and final gene labels
+head(res$FinalLabeling)
+
+}
+
 
 \keyword{classification}

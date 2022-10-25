@@ -33,3 +33,15 @@
     \code{\link{SGCP_ezPLOT}}
     \href{https://github.com/na396/SGCP}{SGCP Toturial}
 }
+
+\examples{
+
+library(SGCP)
+# load the output of geneOntology function
+data(resInitialGO)
+
+# call the function
+
+plt <- SGCP_plot_density(df = resInitialGO$GOresults)
+print(plt)
+}

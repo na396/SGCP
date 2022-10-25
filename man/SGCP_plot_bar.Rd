@@ -8,7 +8,7 @@
 \usage{
 
     SGCP_plot_bar(df, tit = "mean -log10 p-values",
-                  xname = "module", yname = "-log10 p-value")
+                xname = "module", yname = "-log10 p-value")
 }
 \arguments{
     \item{df}{the `GOresults` dataframe returned by geneOntology function in SGCP pipeline }
@@ -34,5 +34,16 @@
     \href{https://github.com/na396/SGCP}{SGCP Toturial}
 }
 
+\examples{
+
+library(SGCP)
+# load the output of geneOntology function
+data(resInitialGO)
+
+# call the function
+
+plt <- SGCP_plot_bar(df = resInitialGO$GOresults)
+print(plt)
+}
 
 

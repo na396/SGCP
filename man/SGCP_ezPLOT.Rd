@@ -7,46 +7,46 @@
 }
 \usage{
     SGCP_ezPLOT(sgcp, expreData, keep = FALSE,
-              pdf.file = TRUE, pdfname = "ezSGCP.pdf",
-              excel.file = TRUE, xlsxname = "ezSGCP.xlsx",
-              w = 6, h = 6, sr = 2, sc = 2, ftype = "png",  uni = "in",
-              expressionPCA = TRUE, pointSize1 = .5,
-              exprePCATitle0 = "Expression Data PCA Without Labels",
-              exprePCATitle1 = "Expression Data PCA With Initial Labels",
-              exprePCATitle2 = "Expression Data PCA With Final Labels",
-              transformedPCA = TRUE, pointSize2 = 0.5,
-              transformedTitle0 = "Transformed Data PCA Without Labels",
-              transformedTitle1 = "Transformed Data PCA Initial Labels",
-              transformedTitle2 = "Transformed Data PCA Final Labels",
-              conduct = TRUE,
-              conductanceTitle = "Cluster Conductance Index",
-              conductx = "clusterLabel", conducty = "conductance index",
-              clus_num = TRUE,
-              silhouette_index = FALSE,
-              silTitle = "Gene Silhouette Index",
-              silx = "genes", sily = "silhouette index",
-              jitt1 = TRUE,
-              jittTitle1 = "Initial GO p-values", jps1 = 3,
-              jittx1 = "cluster", jitty1 = "-log10 p-value",
-              jitt2 = TRUE,
-              jittTitle2 = "Final GO p-values", jps2 = 3,
-              jittx2 = "module", jitty2 = "-log10 p-value",
-              density1 = TRUE,
-              densTitle1 = "Initial GO p-values Density",
-              densx1 = "cluster", densy1 = "-log10 p-value",
-              density2 = TRUE,
-              densTitle2 = "Final GO p-values Density",
-              densx2 = "module", densy2 = "-log10 p-value",
-              mean1 = TRUE,
-              meanTitle1 = "Cluster Performance",
-              meanx1 = "cluster", meany1 = "mean -log10 p-value",
-              mean2 = TRUE,
-              meanTitle2 = "Module Performance",
-              meanx2 = "module", meany2 = "mean -log10 p-value",
-              pie1 = TRUE, pieTitle1 = "Initial GO Analysis",
-              piex1 = "cluster", piey1 = "count", posx1 = 1.8,
-              pie2 = TRUE, pieTitle2 = "Final GO Analysis",
-              piex2 = "module", piey2 = "count", posx2 = 1.8)
+            pdf.file = TRUE, pdfname = "ezSGCP.pdf",
+            excel.file = TRUE, xlsxname = "ezSGCP.xlsx",
+            w = 6, h = 6, sr = 2, sc = 2, ftype = "png",  uni = "in",
+            expressionPCA = TRUE, pointSize1 = .5,
+            exprePCATitle0 = "Expression Data PCA Without Labels",
+            exprePCATitle1 = "Expression Data PCA With Initial Labels",
+            exprePCATitle2 = "Expression Data PCA With Final Labels",
+            transformedPCA = TRUE, pointSize2 = 0.5,
+            transformedTitle0 = "Transformed Data PCA Without Labels",
+            transformedTitle1 = "Transformed Data PCA Initial Labels",
+            transformedTitle2 = "Transformed Data PCA Final Labels",
+            conduct = TRUE,
+            conductanceTitle = "Cluster Conductance Index",
+            conductx = "clusterLabel", conducty = "conductance index",
+            clus_num = TRUE,
+            silhouette_index = FALSE,
+            silTitle = "Gene Silhouette Index",
+            silx = "genes", sily = "silhouette index",
+            jitt1 = TRUE,
+            jittTitle1 = "Initial GO p-values", jps1 = 3,
+            jittx1 = "cluster", jitty1 = "-log10 p-value",
+            jitt2 = TRUE,
+            jittTitle2 = "Final GO p-values", jps2 = 3,
+            jittx2 = "module", jitty2 = "-log10 p-value",
+            density1 = TRUE,
+            densTitle1 = "Initial GO p-values Density",
+            densx1 = "cluster", densy1 = "-log10 p-value",
+            density2 = TRUE,
+            densTitle2 = "Final GO p-values Density",
+            densx2 = "module", densy2 = "-log10 p-value",
+            mean1 = TRUE,
+            meanTitle1 = "Cluster Performance",
+            meanx1 = "cluster", meany1 = "mean -log10 p-value",
+            mean2 = TRUE,
+            meanTitle2 = "Module Performance",
+            meanx2 = "module", meany2 = "mean -log10 p-value",
+            pie1 = TRUE, pieTitle1 = "Initial GO Analysis",
+            piex1 = "cluster", piey1 = "count", posx1 = 1.8,
+            pie2 = TRUE, pieTitle2 = "Final GO Analysis",
+            piex2 = "module", piey2 = "count", posx2 = 1.8)
 }
 \arguments{
 
@@ -202,7 +202,25 @@
         \href{https://arxiv.org/abs/2209.10545}{Aghaieabiane, N and Koutis, I (2022) SGCP: A semi-supervised pipeline for gene clustering using self-training approach in gene co-expression networks}
     }
 
-    \seealso{
-        \href{https://github.com/na396/SGCP}{SGCP Toturial}
-    }
+\seealso{
+    \href{https://github.com/na396/SGCP}{SGCP Toturial}
+}
 
+\examples{
+
+library(SGCP)
+library(SummarizedExperiment)
+
+# load the result of ezSGCP function
+data(sgcp)
+
+# load the input expression dataset
+data(cheng)
+expData <- assay(cheng)
+
+# to call the function uncomment the following
+## plt <- SGCP_ezPLOT(sgcp = sgcp, expreData = cheng, keep = TRUE)
+
+## print(plt)
+
+}

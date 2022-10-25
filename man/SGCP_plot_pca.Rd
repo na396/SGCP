@@ -31,3 +31,15 @@
     \code{\link{SGCP_ezPLOT}}
     \href{https://github.com/na396/SGCP}{SGCP Toturial}
 }
+\examples{
+
+library(SGCP)
+GeneExpression <- matrix(runif(200, 0,1), nrow = 40, ncol = 5)
+diag(GeneExpression) <- 0
+
+## call the function
+plt <- SGCP_plot_pca(m = GeneExpression, clusLabs = NULL)
+
+print(plt)
+
+}

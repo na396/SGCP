@@ -7,19 +7,19 @@
 }
 \usage{
     semiLabeling(geneID, df_GO, GOgenes, cutoff = NULL,
-    percent = 0.10, stp = 0.01)
+                percent = 0.10, stp = 0.01)
 }
 \arguments{
     \item{geneID}{a vector containing the genes IDs of size n,
-                  where n is the number of genes.}
+                where n is the number of genes.}
     \item{df_GO}{GOresults dataframe returned by geneOntology function,
-                 consists the information of GO terms the clusters.}
+                consists the information of GO terms the clusters.}
     \item{GOgenes}{FinalGOTermGenes list returedn by geneOntology function,
-                   is a list of genes associated to the GO Terms per each cluster.}
+                is a list of genes associated to the GO Terms per each cluster.}
     \item{cutoff}{a numeric in (0, 1) default NULL,
-                  is a base line for GO term significancy.}
+                is a base line for GO term significancy.}
     \item{percent}{a number in (0,1) default 0.1,
-                   indicate the percentile for finding top GO terms.}
+                indicate the percentile for finding top GO terms.}
     \item{stp}{a number in (0,1) default 0.01,
                 indicates increasing value to be added to percent parameter.}
     }
@@ -52,3 +52,22 @@ at least two clusters.
     \href{https://github.com/na396/SGCP}{SGCP Toturial}
 }
 
+\examples{
+
+library(SGCP)
+# load the output of clustering, gene ontology function
+
+data(resClus)
+data(resInitialGO)
+
+# call the function
+
+res <- semiLabeling(geneID = resClus$geneID, df_GO = resInitialGO$GOresults,
+                GOgenes = resInitialGO$FinalGOTermGenes)
+# cutoff value
+res$cutoff
+
+# gene semi-labeling information
+head(res$geneLabel)
+
+}

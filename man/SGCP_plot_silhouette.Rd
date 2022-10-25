@@ -37,4 +37,16 @@ In order to plot silhouette index, `sil` parameter in clustering function must b
     \href{https://github.com/na396/SGCP}{SGCP Toturial}
 }
 
+\examples{
+
+library(SGCP)
+data(resClus)
+
+## call the function
+plt <- SGCP_plot_silhouette(df = resClus$silhouette)
+
+print(plt)
+
+}
+
 

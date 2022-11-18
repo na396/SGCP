@@ -212,7 +212,7 @@ Below shows how to call this function. Because, this may take up to 15 minutes t
 
 ```{r, message=TRUE, warning=FALSE}
 # sgcp <- ezSGCP(expData = expData, geneID = geneID, annotation_db = annotation_db, 
-#               sil = TRUE, hm= NULL)
+#               eff.egs = FALSE , saveOrig = FALSE, sil = TRUE, hm= NULL)
 data(sgcp, "SGCP")
 summary(sgcp, show.data=TRUE)
 ```
@@ -477,7 +477,7 @@ Code below shows how to use this function. Again, since it takes time, I have co
 
 ```{r, message=TRUE, warning=FALSE}
 # resClus <- clustering(adjaMat = resAdja, geneID = geneID, annotation_db = annotation_db, 
-#                       sil = TRUE)
+#                       eff.egs = FALSE , saveOrig = FALSE, sil = TRUE)
 
 data(resClus, "SGCP")
 summary(resClus)

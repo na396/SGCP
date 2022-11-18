@@ -109,8 +109,8 @@ geneID <- geneID$ENTREZID
 # to perform clustering
 ## library(org.Hs.eg.db)
 annotation_db = "org.Hs.eg.db"
-## resClus = clustering(adjaMat = resAdja, geneID = geneID, 
-                annotation_db = annotation_db)
+## resClus = clustering(adjaMat = resAdja, geneID = geneID,
+##              annotation_db = annotation_db)
 
 
 }

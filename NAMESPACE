@@ -30,6 +30,7 @@ import("reshape2")
 import("openxlsx")
 import("ggridges")
 import("caret")
+import("magick")
 
 importFrom(DescTools, MeanCI)
 

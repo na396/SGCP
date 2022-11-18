@@ -641,7 +641,7 @@ transformation <- function(adjaMat, geneID, eff.egs){
     diag(D) <- 1/sqrt(diag(D))
     L <- D %*% adjaMat %*% D
 
-    k = min(200, nrow(adjaMat))
+    k <- min(200, nrow(adjaMat))
 
     # Calculate the eigenvalues and eigenvectors
     message("calculating eigenvalues/vectors \n it may take time...")
@@ -690,7 +690,7 @@ transformation <- function(adjaMat, geneID, eff.egs){
         diag(D) <- 1/sqrt(diag(D))
         L <- D %*% adjaMat %*% D
 
-        k = min(200, nrow(adjaMat))
+        k <- min(200, nrow(adjaMat))
 
         # Calculate the eigenvalues and eigenvectors
         message("calculating eigenvalues/vectors \n it may take time...")
@@ -715,7 +715,7 @@ transformation <- function(adjaMat, geneID, eff.egs){
     if(round(constant, 7) != 1 ){
         warning("eigenvector 1 condition does not hold! ", call. = FALSE)
         temp <- paste0("the condition value is ",
-                       as.double(t(Y[,1]) %*% D %*% Y[, 1] != 1))
+                as.double(t(Y[,1]) %*% D %*% Y[, 1] != 1))
         message(temp) }
 
     newList <- list("Y" = Y, "X" = X, "ind" = ind, "geneID" = geneID)
@@ -781,11 +781,11 @@ clustering <- function(adjaMat, geneID , annotation_db ,
     if(n_egvec != round(n_egvec)){
         warning("n_egvec must be an integer ", call. = FALSE)
         message("setting n_egvec to 200...")
-        n_egvec = 200}
+        n_egvec <- 200}
     if(n_egvec > 200){
         warning("maximum value for n_egvec is 200", call. = FALSE)
         message("setting n_egvec to 200...")
-        n_egvec = 200 }
+        n_egvec <- 200 }
 
 
     ################### transformation
@@ -816,13 +816,13 @@ clustering <- function(adjaMat, geneID , annotation_db ,
 
         k <- clusterNumber(egvals = X, maxNum = 102)
         plt <- c(plt, setNames(list(k$plots.relativeGap), "relativeGap"),
-                 setNames(list(k$plots.secondOrderGap), "secondOrderGap" ),
-                 setNames(list(k$plots.additiveGap), "additiveGap") )
+            setNames(list(k$plots.secondOrderGap), "secondOrderGap" ),
+            setNames(list(k$plots.additiveGap), "additiveGap") )
 
 
         cvopt <- cvGO(adja = adjaMat, k = k, Y = Y, X = X,
-                      annotation = annotation_db, geneID = geneID,
-                      maxIter = maxIter, numStart = numStart, func = func.GO)
+                annotation = annotation_db, geneID = geneID,
+                maxIter = maxIter, numStart = numStart, func = func.GO)
 
 
         temp <- paste0("\n method ", method, " is selected using GO validation and k is ", cvopt$k)
@@ -838,12 +838,12 @@ clustering <- function(adjaMat, geneID , annotation_db ,
 
         k <- clusterNumber(egvals = X, maxNum = 102)
         plt <- c(plt, setNames(list(k$plots.relativeGap), "reltiveGap"),
-                 setNames(list(k$plots.secondOrderGap), "secondOrderGap" ),
-                 setNames(list(k$plots.additiveGap), "additiveGap") )
+            setNames(list(k$plots.secondOrderGap), "secondOrderGap" ),
+            setNames(list(k$plots.additiveGap), "additiveGap") )
 
         cvopt <- cvConductance(adja = adjaMat, k = k, Y = Y, X = X,
-                               func = func.conduct,
-                               maxIter = maxIter, numStart = numStart)
+                        func = func.conduct,
+                        maxIter = maxIter, numStart = numStart)
 
         temp <- paste0("\n method ", method, " is selected using conductance index validation and k is ", cvopt$k)
         message(temp)

@@ -11,7 +11,7 @@
         saveAdja = FALSE, adjaNameFile = "adjacency.Rdata",
         hm = "adjaHeatMap.png",
         kopt = NULL, method_k = NULL, f.GO = sum, f.conduct = min,
-        maxIteration = 1e8, numberStart = 1000,
+        maxIteration = 1e8, numberStart = 1000, eff.egs = TRUE,
         saveOrig = TRUE, n_egvec = 100, sil = FALSE,
         dir = c("over", "under"), onto = c("BP", "CC", "MF"),
         hgCut = NULL, condTest = TRUE,
@@ -48,6 +48,8 @@
                     identifies the maximum number of iteration for kmeans.}
     \item{numberStart}{an integer,
                     identifies the number of start for kmeans.}
+    \item{eff.egs}{a boolean, default TRUE,
+                    if TRUE it uses \code{eigs_sym} to calculate the eigenvalues and eigenvectors, more efficient than R default                      function}
     \item{saveOrig}{boolean, default TRUE,
                     if TRUE, keeps the transformation matrix.}
     \item{n_egvec}{either "all" or an integer, default = 100,

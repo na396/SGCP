@@ -5,7 +5,7 @@ ezSGCP <- function(expData, geneID, annotation_db, semilabel = TRUE,
             saveAdja = FALSE, adjaNameFile = "adjacency.Rdata",
             hm = "adjaHeatMap.png",
             kopt = NULL, method_k = NULL, f.GO = sum, f.conduct = min,
-            maxIteration = 1e8, numberStart = 1000,
+            maxIteration = 1e8, numberStart = 1000, eff.egs = TRUE,
             saveOrig = TRUE, n_egvec = 100, sil = FALSE,
             dir = c("over", "under"), onto = c("BP", "CC", "MF"),
             hgCut = NULL, condTest = TRUE,
@@ -116,6 +116,7 @@ ezSGCP <- function(expData, geneID, annotation_db, semilabel = TRUE,
                     kopt = kopt, method = method_k,
                     func.GO = f.GO, func.conduct = f.conduct,
                     maxIter = maxIteration, numStart = numberStart,
+                    eff.egs = eff.egs,
                     saveOrig = saveOrig, n_egvec = n_egvec, sil = sil)
 
     geneID <- resClus$geneID

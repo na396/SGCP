@@ -13,9 +13,9 @@ License: GPL-3
 Encoding: UTF-8
 Imports: ggplot2, expm, caret, plyr, dplyr, GO.db, annotate, SummarizedExperiment, 
         genefilter, GOstats, RColorBrewer, xtable, Rgraphviz, reshape2, openxlsx,
-        ggridges, DescTools, org.Hs.eg.db, methods, grDevices, stats
+        ggridges, DescTools, org.Hs.eg.db, methods, grDevices, stats, RSpectra
 Suggests: knitr
-Depends: R (>= 4.2.0)
+Depends: R (>= 4.2.2)
 biocViews: GeneExpression, GeneSetEnrichment, NetworkEnrichment, SystemsBiology,
              Classification, Clustering, DimensionReduction, GraphAndNetwork,
              NeuralNetwork, Network, mRNAMicroarray, RNASeq, Visualization

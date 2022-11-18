@@ -9,8 +9,8 @@
     clustering(adjaMat, geneID , annotation_db ,
                 kopt = NULL, method = NULL,
                 func.GO = sum, func.conduct = min,
-                maxIter = 1e8, numStart = 1000,
-                saveOrig = TRUE, n_egvec = 100, sil = FALSE)
+                maxIter = 1e8, numStart = 1000, eff.egs = TRUE,
+                saveOrig = TRUE, n_egvec = 200, sil = FALSE)
 }
 \arguments{
     \item{adjaMat}{adjacency matrix of n*n where n is the number of the genes,
@@ -32,9 +32,11 @@
                 identifies the maximum number of iteration for kmeans.}
     \item{numStart}{an integer,
                     identifies the number of start for kmeans.}
+    \item{eff.egs}{boolean, default TRUE,
+                    if TRUE, used \code{eigs_sym} ti calculate the eigenvalues and eigenvectors, more efficient than R default                      function }
     \item{saveOrig}{boolean, default TRUE,
                     if TRUE, keeps the transformation matrix.}
-    \item{n_egvec}{either "all" or an integer, default = 100,
+    \item{n_egvec}{an integer less than 200, default = 200,
                 indicates the number of columns of transformation matrix to be kept}
     \item{sil}{boolean, default FALSE,
             if TRUE, calculates silhouette index for each cluster.}
@@ -106,7 +108,9 @@ geneID <- geneID$ENTREZID
 
 # to perform clustering
 ## library(org.Hs.eg.db)
-## resClus = clustering(adjaMat = resAdja, geneID = geneID,
+annotation_db = "org.Hs.eg.db"
+## resClus = clustering(adjaMat = resAdja, geneID = geneID, 
+                annotation_db = annotation_db)
 
 
 }

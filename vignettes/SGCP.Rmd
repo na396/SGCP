@@ -395,7 +395,7 @@ We highly recommend users to perform `SGCP` on the three potential metod
 
 `SGCP` allows user to visualize the result. `SGCP_ezPLOT` takes `sgcp` result from 
 `ezSGCP` function along with `expData` and `geneID`. It returns two files; excel 
-and pdf depending on the initial call. It also let users keep the plotting object 
+and pdf depending on the initial call. User also can keep the plotting object 
 by setting keep = TRUE. Here, we set `silhouette_in` to TRUE to see the silhouette index plot. We need to have `magic` package installed.
 
 ```{r, message=FALSE, warning=FALSE}
@@ -404,8 +404,7 @@ library(magick)
 
 ```{r, message=FALSE, warning=FALSE}
 message("PCA of expression data without label")
-sgcp_plts <- SGCP_ezPLOT(sgcp = sgcp, expreData = expData, 
-                        silhouette_index = TRUE, keep = TRUE)
+SGCP_ezPLOT(sgcp = sgcp, expreData = expData, silhouette_index = TRUE, keep = FALSE)
 ```
 Note that in order to store files in xlsx format, excel must be installed on your system. 
 
@@ -448,13 +447,13 @@ resAdja[0:10, 0:5]
 ```
 
 
-`resAdja` is the adjacency matrix of the gene co-expression network. We can visualize the heatmap of the adjacency matrix using$~$` SGCP_plot_heatMap` function as follow.
+`resAdja` is the adjacency matrix of the gene co-expression network. We can visualize the heatmap of the adjacency matrix using$~$` SGCP_plot_heatMap` function as follow.To see the heatmap, uncomment the following line of codes.
 
 ```{r, message=TRUE, warning=FALSE}
-message("Plotting adjacency heatmap")
-pl <- SGCP_plot_heatMap(m = resAdja, tit = "Adjacency Heatmap", 
-                    xname = "genes", yname = "genes")
-print(pl)
+#message("Plotting adjacency heatmap")
+#pl <- SGCP_plot_heatMap(m = resAdja, tit = "Adjacency Heatmap", 
+#                    xname = "genes", yname = "genes")
+#print(pl)
 ```
 
 
@@ -561,25 +560,25 @@ If you run the code, you will see the following will be printout for you.
 
 We saw that three methods ("relativeGap", "secondOrderGap", "additiveGap") resulted in three distinct potential number of clusters. `SGCP` picked "secondOrderGap" after gene ontology validation which is 2. `cv` field is "cvGO", which indicates that k is found based on gene ontology validation. In `original` field, you can have the n_egvec first columns ( eigenvectors) and eigenvalues of the transformation matrix. This might be useful for further investigation.
 
-Now we can see the plot of PCA on the expression and transformed data with and without the labels as follow.
+Now we can see the plot of PCA on the expression and transformed data with and without the labels using `SGCP_plot_pca`. For practice, uncomment the following and see the resulting PCAs.
 
 ```{r, message=TRUE, warning=FALSE}
 message("Plotting PCA of expression data with label")
 
-pl <- SGCP_plot_pca(m = expData, clusLabs = NULL, tit = "PCA plot without label", ps = .5)
-print(pl)
+# pl <- SGCP_plot_pca(m = expData, clusLabs = NULL, tit = "PCA plot without label", ps = .5)
+# print(pl)
 ```
 
 ```{r, message=TRUE, warning=FALSE}
 message("Plptting PCA of transformed data without label")
-pl <- SGCP_plot_pca(m = resClus$Y, clusLabs = NULL, tit = "PCA plot without label", ps = .5)
-print(pl)
+# pl <- SGCP_plot_pca(m = resClus$Y, clusLabs = NULL, tit = "PCA plot without label", ps = .5)
+# print(pl)
 ```
 
 ```{r, message=TRUE, warning=FALSE}
 message("Plotting PCA of transformed data with label")
-pl <- SGCP_plot_pca(m = resClus$Y, clusLabs = resClus$clusterLabels, tit = "PCA plot with label", ps = .5)
-print(pl)
+# pl <- SGCP_plot_pca(m = resClus$Y, clusLabs = resClus$clusterLabels, tit = "PCA plot with label", ps = .5)
+# print(pl)
 ```
 
 
@@ -750,24 +749,24 @@ print(table(resSemiSupervised$FinalLabeling$FinalLabel))
 ```
 In this step, k-nearest neighbor model is selected. It hyper-parameter is selected based on cross validation on accuracy metric. Table above shows the gene semi label and final labeling.
 
-Now lets see the PCA plot with the final labeling.
+Now you can see the PCA plot with the final labeling using `SGCP_plot_pca` function. For practice uncomment the following to see the resulting PCAs.
 
 ```{r, message=TRUE, warning=FALSE}
-message("Plotting PCA of transformed data with label")
-pl <- SGCP_plot_pca(m = expData, 
-                clusLabs = resSemiSupervised$FinalLabeling$FinalLabel, 
-                tit = "PCA plot with label", ps = .5)
+# message("Plotting PCA of transformed data with label")
+# pl <- SGCP_plot_pca(m = expData, 
+#                clusLabs = resSemiSupervised$FinalLabeling$FinalLabel, 
+#                tit = "PCA plot with label", ps = .5)
 print(pl)
 ```
 
 
 
 ```{r, message=TRUE, warning=FALSE}
-message("Plotting PCA of transformed data with label")
-pl <- SGCP_plot_pca(m = resClus$Y, 
-                clusLabs = resSemiSupervised$FinalLabeling$FinalLabel, 
-                tit = "PCA plot with label", ps = .5)
-print(pl)
+# message("Plotting PCA of transformed data with label")
+# pl <- SGCP_plot_pca(m = resClus$Y, 
+#                clusLabs = resSemiSupervised$FinalLabeling$FinalLabel, 
+#                tit = "PCA plot with label", ps = .5)
+#print(pl)
 ```
 
 

@@ -184,13 +184,13 @@ ezSGCP <- function(expData, geneID, annotation_db, semilabel = TRUE,
                         unique(clusterLabels$finalClusters))
 
         if(length(remain)== 1){
-            temp <- paste0("cluster ", remain, " is wiped out")
+            tt <- paste0("cluster ", remain)
+            temp <- paste0(tt, " is wiped out")
             message(temp)
         }else if(length(remain)){
-            temp <- paste0("clusters", remain, " are wiped out")
+            tt <- paste0("clustes ", remain)
+            temp <- paste0(tt, " are wiped out")
             message(temp)}
-
-
 
 
     } # end of semiLabel

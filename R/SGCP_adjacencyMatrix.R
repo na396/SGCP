@@ -22,12 +22,14 @@ checkSym <- function(mat, stp){
     # checks if mat is symmetric
     # checks if values in mat are between (0, 1)
 
-    caption_sym <- paste0(" output of ", stp, " is not symmetric")
+    sym_sym <- paste0(" output of ", stp)
+    caption_sym <- paste0(sym_sym, " is not symmetric")
     
     if(!isSymmetric(mat))
         stop(caption)
-
-    caption_01 <- paste0(" output of ", stp, " are not in (0,1)")
+    
+    c01 <-  paste0(" output of ", stp)
+    caption_01 <- paste0(c01, " are not in (0,1)")
     
     if(length(table(between(mat, 0, 1)["FALSE"])) != 0)
         stop(caption_01)

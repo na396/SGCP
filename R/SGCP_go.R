@@ -118,7 +118,6 @@ GOenrichment <- function(universe_geneIDs, cluster_geneIDs, annotation_db, lab,
                             universeGeneIds = universe_geneIDs,
                             annotation = annotation_db,
                             ontology = onto,
-                            #pvalueCutoff = hgCutoff,
                             conditional = condition,
                             testDirection = direct) }
 
@@ -199,8 +198,7 @@ geneOntology <- function(geneUniv, clusLab, annotation_db,
         stop(" length of the geneUni must be equal to length of clusLab")}
 
     if(is.null(annotation_db)){ stop("annotation_db must be defined by user!") }
-    # if(!is.character(annotation_db)){
-    #   stop("type of annotation_db must be character") }
+
 
     if(is.factor(clusLab)){
         clusLab <- data.frame(clusterLabel = clusLab)

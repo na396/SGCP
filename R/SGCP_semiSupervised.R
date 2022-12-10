@@ -53,7 +53,7 @@ semiSupervised <- function(specExp, geneLab, model = "knn", kn = NULL){
             kn <- seq(20, min(30, up))  }
 
         semiSuper <-
-        caret::train(label~., method = "knn", tuneGrid = expand.grid(k = kn),
+        train(label~., method = "knn", tuneGrid = expand.grid(k = kn),
         metric = "Accuracy", data = train)
 
         semiSuper
@@ -69,7 +69,7 @@ semiSupervised <- function(specExp, geneLab, model = "knn", kn = NULL){
     }else if(model == "lr"){
 
         message("performing losgistic regression...")
-        semiSuper <- caret::train(label ~., method = "multinom", data = train)
+        semiSuper <- train(label ~., method = "multinom", data = train)
 
         semiSuper
         show(summary(semiSuper))

@@ -25,81 +25,15 @@ opts_chunk$set(fig.align = 'center', fig.width = 6, fig.height = 6, dev = 'png')
 Self-training Gene Clustering Pipeline (`SGCP`) is a framework for gene co-expression network construction and analysis. The goal in these networks is to group the genes in a way that those with similar expression pattern fall within the same network cluster, commonly called module. `SGCP` consists of multiple novel steps that enable the computation of highly enriched modules in an unsupervised manner. But unlike all existing frameworks, it further incorporates a novel step that leverages Gene Ontology (GO) information in a semi-supervised clustering method that further improves the quality of the computed modules. `SGCP` results in highly enriched modules. Preprint of manuscript describing `SGCP` in details is available
 in [here](https://arxiv.org/abs/2209.10545). 
 
-
-## `SGCP` Pipeline Parameters and Workflow
-
-`SGCP` is based on `5` main steps to produce the final modules.
-Each step offers parameters that can be adjusted by the user as follow. Each step 
-is implemented in a single function.
-
-1. __Network Construction__ step (`adjacencyMatrix` function)
-    * `calibration`: boolean, default FALSE, if TRUE `SGCP` performs calibration step
-    for more information see [link](https://www.frontiersin.org/articles/10.3389/fbinf.2021.704817/full).
-    * `norm`: boolean, default TRUE, if TRUE `SGCP` divides each genes (rows) by its norm2.
-    * `tom`: boolean, default TRUE, if TRUE `SGCP` adds TOM to the network.
-    * `saveAdja`: boolean, default FALSE, if TRUE, the adjacency matrix will be saved .
-    * `adjaNameFile`: string indicates the name of file for saving adjacency matrix.
-    * `hm`: string indicates the name of file for saving adjacency matrix heat map.
-
-2. __Network Clustering__ step (`clustering` function) 
-    * `kopt`: an integer, default NULL, denotes the optimal number of clusters k by the user.
-    * `method`:  either "relativeGap", "secondOrderGap", "additiveGap", or NULL, 
-    default NULL. Defines the method for number of cluster.
-    * `func.GO`: a function for gene ontology validation, default is sum.
-    * `func.conduct`: a function for conductance validation, default is min.
-    * `maxIter`: an integer, identifies the maximum number of iteration in kmeans.
-    * `numStart`: an integer, identifies the number of start in kmeans.
-    * `saveOrig`: boolean, default TRUE, if TRUE, keeps the transformed matrix.
-    * `n_egvec`: either "all" or an integer, default = 100, indicates the 
-    number of columns of transformed matrix to be kept.
-    * `sil`: boolean, default FALSE, if TRUE, calculates silhouette index per gene.
-    at the end of this step, initial clusters are produced.
-    
-3. __Gene Ontology Enrichment__ step (`geneOntology` function)
-    * `direction`: test direction, default c("over", "under"), for over-represented, or under-represented                  GO terms
-    * `ontology`: GO ontologies, default c("BP", "CC", "MF"), BP: Biological Process, CC: Cellular                         Component, MF: Molecular Function.
-    * `hgCutoff`: a numeric value in (0,1) as the p-value baseline, default 0.05, GO terms smaller than                `hgCutoff` value are kept.
-    * `cond`: boolean, default TRUE, if TRUE conditional hypergeometric test is performed.
-    
-4. __Gene Semi-labeling__ step (`semiLabeling` function)
-    * `cutoff`: a numeric in (0, 1) default NULL, is a base line for GO term significancy to identify remarkable and unremarkable genes.
-    * `percent`: a number in (0,1) default 0.1, indicate the percentile for finding top GO terms.
-    * `stp`: a number in (0,1) default 0.01, indicates increasing value to be added to `percent` parameter.
-    
-5. __Semi-supervised Classification__ step (`semiSupevised` function)
-    * `model`: either "knn" or "lr" for classification model, knn: k nearest neighbors, lr: logistic                 regression.
-    * `kn`: an integer default NULL indicating the number of neighbors in knn, 
-            if `kn` is NULL, then `kn` = 20 : (20 + 2 * k) if 2 * k < 30 otherwise 20 : 30, 
-    at the end of this step, final modules are produced.
-    
-At the end, `SGCP` performs on more Gene Ontology Enrichment on the final modules.
-
-Detailed of the steps are available in the manuscript in [SGCP](https://arxiv.org/abs/2209.10545). 
-In __Network Construction__, user can identify of any of steps to be
-added to the network. In __Network Clustering__, If `kopt` is not null, 
-`SGCP` will find clusters based on `kopt`. Otherwise, if `method` is not null, 
-`SGCP` will pick k based on the selected method. Otherwise, if `geneID` and 
-`annotation_db` is null, `SGCP` will determine the optimal method and its 
-corresponding number of cluster based on conductance validation. It picks a 
-method that `func.conduct` (default min) on its cluster is minimum. Otherwise, 
-`SGCP` will use gene ontology validation (by default) to find the optimal method and its 
-corresponding number of clusters. To this end, it performs gene ontology enrichment 
-on the cluster with minimum conductance index per method and pick the one that 
-has the maximum `func.GO` (default sum)  over -log10 of p-values. In 
-__Gene Semi-labeling__ step, if `cutoff` is not NULL, `SGCP` considers genes 
-associated to GO terms more significant than$~$`cutoff`$~$ as remarkable. Otherwise, 
-`SGCP` collects all GO terms from all clusters and picks the `percent` (default 0.1)
-mot significant GO terms among them. If Genes associated to these significant terms 
-come from more than a single cluster, `SGCP` takes these genes as remarkable. 
-Otherwise, it adds$~$`stp`$~$to$~$`percent`$~$and repeat this process until remarkable genes 
-come from at least two clusters. In __Semi-supervised Classification__ 
-remarkable clusters are the clusters that have at least one remarkable gene.
-
-
-
 ## `SGCP` installation
-To install `SGCP` please visit [here](https://github.com/na396/SGCP). Load `SGCP` after installation.
+`SGCP` can be installed through the BiocManager (visit [here](https://github.com/na396/SGCP)) as follow.
 
+```{r, message=FALSE, warning=FALSE}
+BiocManager::install("SGCP")
+```
+
+
+Now load the package.
 
 ```{r, message=FALSE, warning=FALSE}
 library(SGCP)
@@ -171,6 +105,7 @@ print("rownames are the gene Entrez ids")
 head(rowData(cheng))
 ```
 
+
 This data has the dimension of 1500 genes and 10 samples.
 
 
@@ -194,6 +129,76 @@ annotation_db <- "org.Hs.eg.db"
 ```
 
 
+## `SGCP` Pipeline Parameters and Workflow
+
+`SGCP` is based on `5` main steps to produce the final modules.
+Each step offers parameters that can be adjusted by the user as follow. Each step 
+is implemented in a single function.
+
+1. __Network Construction__ step (`adjacencyMatrix` function)
+    * `calibration`: boolean, default FALSE, if TRUE `SGCP` performs calibration step
+    for more information see [link](https://www.frontiersin.org/articles/10.3389/fbinf.2021.704817/full).
+    * `norm`: boolean, default TRUE, if TRUE `SGCP` divides each genes (rows) by its norm2.
+    * `tom`: boolean, default TRUE, if TRUE `SGCP` adds TOM to the network.
+    * `saveAdja`: boolean, default FALSE, if TRUE, the adjacency matrix will be saved .
+    * `adjaNameFile`: string indicates the name of file for saving adjacency matrix.
+    * `hm`: string indicates the name of file for saving adjacency matrix heat map.
+
+2. __Network Clustering__ step (`clustering` function) 
+    * `kopt`: an integer, default NULL, denotes the optimal number of clusters k by the user.
+    * `method`:  either "relativeGap", "secondOrderGap", "additiveGap", or NULL, 
+    default NULL. Defines the method for number of cluster.
+    * `func.GO`: a function for gene ontology validation, default is sum.
+    * `func.conduct`: a function for conductance validation, default is min.
+    * `maxIter`: an integer, identifies the maximum number of iteration in kmeans.
+    * `numStart`: an integer, identifies the number of start in kmeans.
+    * `saveOrig`: boolean, default TRUE, if TRUE, keeps the transformed matrix.
+    * `n_egvec`: either "all" or an integer, default = 100, indicates the 
+    number of columns of transformed matrix to be kept.
+    * `sil`: boolean, default FALSE, if TRUE, calculates silhouette index per gene.
+    at the end of this step, initial clusters are produced.
+    
+3. __Gene Ontology Enrichment__ step (`geneOntology` function)
+    * `direction`: test direction, default c("over", "under"), for over-represented, or under-represented                  GO terms
+    * `ontology`: GO ontologies, default c("BP", "CC", "MF"), BP: Biological Process, CC: Cellular                         Component, MF: Molecular Function.
+    * `hgCutoff`: a numeric value in (0,1) as the p-value baseline, default 0.05, GO terms smaller than                `hgCutoff` value are kept.
+    * `cond`: boolean, default TRUE, if TRUE conditional hypergeometric test is performed.
+    
+4. __Gene Semi-labeling__ step (`semiLabeling` function)
+    * `cutoff`: a numeric in (0, 1) default NULL, is a base line for GO term significancy to identify remarkable and unremarkable genes.
+    * `percent`: a number in (0,1) default 0.1, indicate the percentile for finding top GO terms.
+    * `stp`: a number in (0,1) default 0.01, indicates increasing value to be added to `percent` parameter.
+    
+5. __Semi-supervised Classification__ step (`semiSupevised` function)
+    * `model`: either "knn" or "lr" for classification model, knn: k nearest neighbors, lr: logistic                 regression.
+    * `kn`: an integer default NULL indicating the number of neighbors in knn, 
+            if `kn` is NULL, then `kn` = 20 : (20 + 2 * k) if 2 * k < 30 otherwise 20 : 30, 
+    at the end of this step, final modules are produced.
+    
+At the end, `SGCP` performs on more step of Gene Ontology Enrichment on the final modules.
+
+Detailed of the steps are available in the manuscript in [SGCP](https://arxiv.org/abs/2209.10545). 
+In __Network Construction__, user can identify of any of steps to be
+added to the network. In __Network Clustering__, If `kopt` is not null, 
+`SGCP` will find clusters based on `kopt`. Otherwise, if `method` is not null, 
+`SGCP` will pick k based on the selected method. Otherwise, if `geneID` and 
+`annotation_db` is null, `SGCP` will determine the optimal method and its 
+corresponding number of cluster based on conductance validation. It picks a 
+method that `func.conduct` (default min) on its cluster is minimum. Otherwise, 
+`SGCP` will use gene ontology validation (by default) to find the optimal method and its 
+corresponding number of clusters. To this end, it performs gene ontology enrichment 
+on the cluster with minimum conductance index per method and pick the one that 
+has the maximum `func.GO` (default sum)  over -log10 of p-values. In 
+__Gene Semi-labeling__ step, if `cutoff` is not NULL, `SGCP` considers genes 
+associated to GO terms more significant than$~$`cutoff`$~$ as remarkable. Otherwise, 
+`SGCP` collects all GO terms from all clusters and picks the `percent` (default 0.1)
+mot significant GO terms among them. If Genes associated to these significant terms 
+come from more than a single cluster, `SGCP` takes these genes as remarkable. 
+Otherwise, it adds$~$`stp`$~$to$~$`percent`$~$and repeat this process until remarkable genes 
+come from at least two clusters. In __Semi-supervised Classification__ 
+remarkable clusters are the clusters that have at least one remarkable gene.
+
+
 
 # Automatic Run, `ezSGCP` Function
 
@@ -213,7 +218,7 @@ Below shows how to call this function. Because, this may take up to 15 minutes t
 ```{r, message=TRUE, warning=FALSE}
 # sgcp <- ezSGCP(expData = expData, geneID = geneID, annotation_db = annotation_db, 
 #               eff.egs = FALSE , saveOrig = FALSE, sil = TRUE, hm= NULL)
-data(sgcp, "SGCP")
+data(sgcp)
 summary(sgcp, show.data=TRUE)
 ```
 If you run the function, you will see the following during the execution, which tells you the current state of `ezSGCP` function.
@@ -396,11 +401,8 @@ We highly recommend users to perform `SGCP` on the three potential metod
 `SGCP` allows user to visualize the result. `SGCP_ezPLOT` takes `sgcp` result from 
 `ezSGCP` function along with `expData` and `geneID`. It returns two files; excel 
 and pdf depending on the initial call. User also can keep the plotting object 
-by setting keep = TRUE. Here, we set `silhouette_in` to TRUE to see the silhouette index plot. We need to have `magic` package installed.
+by setting keep = TRUE. Here, we set `silhouette_in` to TRUE to see the silhouette index plot.
 
-```{r, message=FALSE, warning=FALSE}
-library(magick)
-```
 
 ```{r, message=FALSE, warning=FALSE}
 message("PCA of expression data without label")

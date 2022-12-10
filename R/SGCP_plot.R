@@ -120,8 +120,6 @@ SGCP_plot_heatMap <- function(m, tit = "Adjacency Heatmap",
     melted_m <- melt(m)
     n <- min(nrow(melted_m), 1000)
 
-    #geo_heatmap <- heatmap(as.matrix(melted_m), Rowv = NULL, Colv = NULL)
-
     geo_heatmap <- ggplot(melted_m, aes(x = Var1, y = Var2, fill = value)) +
         geom_tile() +
         scale_fill_distiller(palette = 'Spectral') +
@@ -129,13 +127,10 @@ SGCP_plot_heatMap <- function(m, tit = "Adjacency Heatmap",
 
         theme(axis.title.x = element_text(size = 10, face = 'bold',
                                         lineheight = 0.9)) +
-        # theme(axis.text.y = element_text(size = 10, face = 'bold',
-        #                                  lineheight = 0.9)) +
         theme(axis.title.y = element_text(size = 10, face = 'bold',
                                         lineheight = 0.9)) +
         theme(plot.title = element_text(size = 15,face = 'bold',
                                         lineheight = 0.9, hjust = 0.5)) +
-        #theme(legend.position = c(.9, .9) ) +
         theme(legend.title = element_text(size = 8, face="bold")) +
         theme(legend.text = element_text(size = 8)) +
         labs(x = xname, y = yname, title = tit)
@@ -352,8 +347,8 @@ SGCP_plot_pie <- function(df, tit = "GO Analysis",
     temp$logPvalue <- -log10(df$Pvalue)
 
     ppl <- temp %>%
-        dplyr::group_by(clusterNum, GOtype) %>%
-        dplyr::summarise(max = max(logPvalue), count = n())
+            group_by(clusterNum, GOtype) %>%
+            summarise(max = max(logPvalue), count = n())
 
     cluslabs <- unique(ppl$clusterNum)
     onto <- c("overBP", "overCC", "overMF", "underBP", "underCC", "underMF")
@@ -420,7 +415,6 @@ SGCP_plot2excel <- function(pl, wb, shname,
     # the saving file
     # index of the sheet
 
-    #wb = createWorkbook()
 
     addWorksheet(wb, shname, gridLines = FALSE)
     show(pl)

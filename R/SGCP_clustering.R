@@ -8,7 +8,6 @@ silhouette <- function(dis.y, clus.labels){
     # clus.labels: a vector
     #             contains the clusterlabels for the point
 
-    #checkSym(dis.y, stp = "silhouette index")
 
     if(!is.matrix(dis.y)){ dis.y <- as.matrix(dis.y)}
 
@@ -85,10 +84,8 @@ divideNorm <- function(M, rowWise = TRUE){
         M <- t(M)
 
     }else if(rowWise == FALSE){
-        #M <- t(M)
         M <- as.data.frame(lapply(as.data.frame(M), normalization))
         M <- as.matrix(M)
-        #M <- t(M)
 
     }else{ stop( " rowWise can be either TRUE or FALSE")}
 
@@ -180,13 +177,13 @@ clusterNumber <- function(egvals, maxNum = 102){
     if(round(egvals[1], 7) == 1){egvals <- egvals[-1]}
 
     # method: eigen gap
-    #k <- seq(2, maxNum)
+    
     k <- seq_len(maxNum)
     k <- k[-1]
     pairDiff <- abs(diff(egvals[seq_len(maxNum)]))
 
     dfgap <- as.data.frame(cbind(k, pairDiff))
-    #dfgap <- dfgap[-1, ]
+    
     optg <- dfgap[which.max(pairDiff),]$k
 
     # method: first and second order
@@ -209,8 +206,7 @@ clusterNumber <- function(egvals, maxNum = 102){
         i <- i+1}
 
     df$secondOrder <- c(NA, diff(df$firstOrder))
-    #df$indices <- seq(1:nrow(df))
-    #print(head(df))
+ 
 
     # method: first
     resf <- df$firstOrder
@@ -230,7 +226,6 @@ clusterNumber <- function(egvals, maxNum = 102){
     temp <- paste0("number of clusters for additiveGap method is ")
     message(temp, optg)
 
-    #if(plt){
 
     pltgap <- ggplot(data = dfgap, aes(x = k, y = pairDiff)) +
         geom_point(size = .5) +
@@ -445,7 +440,6 @@ sigClusGO <- function(adja, Y, X, k, annotation, geneID,
                         ontology = c("BP", "CC", "MF"),
                         hgCutoff = NULL,
                         condition = TRUE)
-    #df = summary(nl.t)
 
     newList <- list("Y" = Yt, "X" = Xt, "k" = k, "clus" = clust,
                     "conductance" = cont, "pvalues" = nl.t$GO_summary$Pvalue,
@@ -729,7 +723,6 @@ clustering <- function(adjaMat, geneID , annotation_db ,
                         maxIter = 1e8, numStart = 1000, eff.egs = TRUE,
                         saveOrig = TRUE, n_egvec = 200, sil = FALSE){
 
-
     if(is.data.frame(adjaMat)){
         warning("adjaMat is a dataframe", call. = FALSE)
         message("converting adjancecy to matrix")
@@ -807,7 +800,7 @@ clustering <- function(adjaMat, geneID , annotation_db ,
         message(temp)
         Yorig <- Y[, seq_len(min(n_egvec, ncol(Y)))]
         Xorig <- X[seq_len(min(n_egvec, length(X)))]
-        Yorig <- divideNorm(Yorig, rowWise = TRUE) }
+        }
 
     plt <- list()
 
@@ -825,7 +818,7 @@ clustering <- function(adjaMat, geneID , annotation_db ,
                 maxIter = maxIter, numStart = numStart, func = func.GO)
 
 
-        temp <- paste0("\n method ", method, " is selected using GO validation and k is ", cvopt$k)
+        temp <- paste0("\n method ", cvopt$method, " is selected using GO validation and k is ", cvopt$k)
         message(temp)
 
         newList <- list("dropped.indices" = ind, "geneID" = geneID, "method" = cvopt$method,
@@ -845,7 +838,7 @@ clustering <- function(adjaMat, geneID , annotation_db ,
                         func = func.conduct,
                         maxIter = maxIter, numStart = numStart)
 
-        temp <- paste0("\n method ", method, " is selected using conductance index validation and k is ", cvopt$k)
+        temp <- paste0("\n method ", cvopt$method, " is selected using conductance index validation and k is ", cvopt$k)
         message(temp)
 
         newList <- list("dropped.indices" = ind, "geneID" = geneID, "method" = cvopt$method,
@@ -869,7 +862,7 @@ clustering <- function(adjaMat, geneID , annotation_db ,
             conf <- conductance(adja = adjaMat, clusLab = clusf$cluster)
 
 
-            temp <- paste0("\n method ", method, " is selected using user and k is ", k$relativeGap)
+            temp <- paste0("\n method ", "relativeGap", " is selected using user and k is ", k$relativeGap)
             message(temp)
 
             newList <- list("dropped.indices" = ind, "geneID" = geneID, "method" = "relativeGap",
@@ -888,7 +881,7 @@ clustering <- function(adjaMat, geneID , annotation_db ,
             cluss <- kmeans(Ys, ksecondOrderGap, iter.max = maxIter, nstart = numStart)
             cons <- conductance(adja = adjaMat, clusLab = cluss$cluster)
 
-            temp <- paste0("\n method ", method, " is selected using user and k is ", k$secondOrderGap)
+            temp <- paste0("\n method ", "secondOrderGap", " is selected using user and k is ", k$secondOrderGap)
             message(temp)
 
             newList <- list("dropped.indices" = ind, "geneID" = geneID, "method" = "secondOrderGap",
@@ -907,7 +900,7 @@ clustering <- function(adjaMat, geneID , annotation_db ,
             clusg <- kmeans(Yg, kadditiveGap, iter.max = maxIter, nstart = numStart)
             cong <- conductance(adja = adjaMat, clusLab = clusg$cluster)
 
-            temp <- paste0("\n method ", method, " is selected using user and k is ", k$additiveGap)
+            temp <- paste0("\n method ", "additiveGap", " is selected using user and k is ", k$additiveGap)
             message(temp)
 
             newList <- list("dropped.indices" = ind, "geneID" = geneID, "method" = "additiveGap",

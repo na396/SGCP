@@ -26,11 +26,13 @@ Self-training Gene Clustering Pipeline (`SGCP`) is a framework for gene co-expre
 in [here](https://arxiv.org/abs/2209.10545). 
 
 ## `SGCP` installation
-To install the package `SGCP` use the following. For more information please visit [here](https://github.com/na396/SGCP)).
+To install the package `SGCP` use the following. For more information please visit [here](https://github.com/na396/SGCP)). `SGCP` relies on two more packages; `SummarizedExperiment` and `org.Hs.eg.db`.
 
-```{r, message=FALSE, warning=FALSE}
-BiocManager::install('SGCP')
+```{r, eval=FALSE}
+library(BiocManager)
+BiocManager::install(c('SGCP', 'SummarizedExperiment', 'org.Hs.eg.db'))
 ```
+
 Let's start.
 
 ```{r, message=FALSE, warning=FALSE}

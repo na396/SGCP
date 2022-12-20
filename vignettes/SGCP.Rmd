@@ -30,7 +30,7 @@ To install the package `SGCP` use the following. For more information please vis
 
 ```{r, eval=FALSE}
 library(BiocManager)
-BiocManager::install(c('SGCP', 'SummarizedExperiment', 'org.Hs.eg.db'))
+BiocManager::install('SGCP')
 ```
 
 

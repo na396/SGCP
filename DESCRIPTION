@@ -1,7 +1,7 @@
 Package: SGCP
 Type: Package
 Title: SGCP: A semi-supervised pipeline for gene clustering using self-training approach in gene co-expression networks
-Version: 0.99.6
+Version: 0.99.7
 Authors@R: c(person("Niloofar", "AghaieAbiane", email = "niloofar.abiane@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-1096-7592")),
 			 person("Ioannis", "Koutis", email = "ikoutis@njit.edu", role = c("aut")))
 Description: SGC is a semi-supervised pipeline for gene clustering in gene co-expression networks.
@@ -13,7 +13,7 @@ License: GPL-3
 Encoding: UTF-8
 Imports: ggplot2, expm, caret, plyr, dplyr, GO.db, annotate, SummarizedExperiment, 
         genefilter, GOstats, RColorBrewer, xtable, Rgraphviz, reshape2, openxlsx,
-        ggridges, DescTools, org.Hs.eg.db, methods, grDevices, stats, RSpectra
+        ggridges, DescTools, org.Hs.eg.db, methods, grDevices, stats, RSpectra, graph
 Suggests: knitr, BiocManager
 Depends: R (>= 4.3.0)
 biocViews: GeneExpression, GeneSetEnrichment, NetworkEnrichment, SystemsBiology,

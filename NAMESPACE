@@ -29,10 +29,15 @@ import("Rgraphviz")
 import("ggridges")
 
 importFrom(GOstats, hyperGTest)
+importFrom(GOstats, goDag)
+
+importFrom(graph, nodeData)
+
 importFrom(openxlsx, createWorkbook)
 importFrom(openxlsx, addWorksheet)
 importFrom(openxlsx, insertPlot)
 importFrom(openxlsx, saveWorkbook)
+
 importFrom(reshape2, melt)
 
 importFrom(DescTools, MeanCI)

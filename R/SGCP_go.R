@@ -17,7 +17,7 @@ GeneOfGOTerm <- function(hg, hg_summary, geneID, condition){
     #                   that fall in the cluster
     #
 
-    GO_Genes <- hg@goDag@nodeData@data
+    GO_Genes <- nodeData(goDag(hg))
     labeledGenes <- -1
     GOTermGenes <- list()
 

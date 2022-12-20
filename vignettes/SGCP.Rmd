@@ -26,12 +26,13 @@ Self-training Gene Clustering Pipeline (`SGCP`) is a framework for gene co-expre
 in [here](https://arxiv.org/abs/2209.10545). 
 
 ## `SGCP` installation
-To install the package `SGCP` use the following. For more information please visit [here](https://github.com/na396/SGCP)). `SGCP` relies on two more packages; `SummarizedExperiment` and `org.Hs.eg.db`.
+To install the package `SGCP` use the following. For more information please visit [here](https://github.com/na396/SGCP)). In this manual guide, `SGCP` also relies on two more packages; `SummarizedExperiment` and `org.Hs.eg.db`.
 
 ```{r, eval=FALSE}
 library(BiocManager)
 BiocManager::install(c('SGCP', 'SummarizedExperiment', 'org.Hs.eg.db'))
 ```
+
 
 Let's start.
 
@@ -87,10 +88,12 @@ For illustrative purposes we will use an example of a gene expression provided w
 This data originally represent 5000 genes in 57 samples for Homo sapiens, 
 for more information see ([Cheng et al.](https://www.sciencedirect.com/science/article/abs/pii/S0010482520303061?via%3Dihub)) Here, to ease the computation, 1000 genes that have the most variance selected with 5 samples have been selected. 
 
+For this input example we need to install the following packages.
 
 The input example is organized as an object of `SummarizedExperiment`. The `assay` field shows the expression matrix in which rows and columns correspond to gene and samples respectively. `rowData` denotes the gene Entrez ids for the gene. Note that there is 1-to-1 correspondence between rows in `assays` and `rowData` fields, thus  `rowData` at index `i` shows the gene Entrez id for gene at row `i` in `assays` field. We call this object `cheng`. 
 `annotation_db` is org.Hs.eg.db, and is required to be installed if is not, see
 [link](https://bioconductor.org/packages/release/data/annotation/html/org.Hs.eg.db.html). Let's look at the input example.
+
 
 ```{r, message=FALSE, warning=FALSE}
 library(SummarizedExperiment)

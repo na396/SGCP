@@ -27,7 +27,7 @@ UTF-8
 of interest for gene ontology (GO) enrichment step.`annotation_db` must be 
 installed by user prior using `SGCP`.
 
-Here, are some important `annotation_db` along with its corresponding identifiers.
+Here, are some of the important `annotation_db` along with its corresponding identifiers.
 
 |organism                     | annotation_db  | gene identifier         |
 |:----------------------------|:--------------:|:---------------------   | 

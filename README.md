@@ -76,23 +76,23 @@ In the first place, we need to download the gene expression file. GEOquery (for 
 
 library(GEOquery)
 
-gse <- getGEOSuppFiles("GSE181225", baseDir = getwd())
+gse = getGEOSuppFiles("GSE181225", baseDir = getwd())
 
 ```
 Now, you can see a new directory `GSE181225` which includes the expression file. Read the gene expression file. Column `Symbol` shows the gene symbols and the remaining four columns indicates the samples.
 
 ```{r}
-df <- read.delim("GSE181225/GSE181225_LNCaP_p57_VO_and_p57_PIM1_RNA_Seq_normalizedCounts.txt.gz")
+df = read.delim("GSE181225/GSE181225_LNCaP_p57_VO_and_p57_PIM1_RNA_Seq_normalizedCounts.txt.gz")
 head(df)
 ```
 
 
 Create __expData__, __geneID__, and __annotation_db__.
 ```{r}
-geneID <- df[,1]
+geneID = df[,1]
 
-expData <- df[, 2:ncol(df)]
-rownames(expData) <- geneID
+expData = df[, 2:ncol(df)]
+rownames(expData) = geneID
 
 library(org.Hs.eg.db)
 ```
@@ -102,7 +102,7 @@ Because of the __annotation_db__, gene Entrez identifier correspond to the gene 
 ```{r}
 library(AnnotationDbi)
 
-genes <- AnnotationDbi::select(org.Hs.eg.db, keys = rownames(expData), 
+genes = AnnotationDbi::select(org.Hs.eg.db, keys = rownames(expData), 
                       columns=c("ENTREZID"), 
                       keytype="SYMBOL")
 # initial dimension
@@ -111,8 +111,8 @@ head(genes)
 ```
 Dropping genes that its either `SYMBOL` or `ENTREZID` is missing.
 ```{r}
-genes <- genes[!is.na(genes$SYMBOL), ]
-genes <- genes[!is.na(genes$ENTREZID), ]
+genes = genes[!is.na(genes$SYMBOL), ]
+genes = genes[!is.na(genes$ENTREZID), ]
 
 #dimension after dropping missing values
 print(dim(genes))
@@ -178,12 +178,12 @@ Produce the final __expData__, __geneID__, __annotation_db__. Now, the input is 
 [Bioconductor page](https://www.bioconductor.org/packages/release/bioc/html/SGC.html) in order to see how to use them in `SGCP`. 
 
 ```{r}
-expData <- expData
+expData = expData
 print(head(expData))
 
-geneID <- genes$ENTREZID
+geneID = genes$ENTREZID
 print(head(geneID))
 
-annotation_db <- "org.Hs.eg.db" 
+annotation_db = "org.Hs.eg.db" 
 ```
 

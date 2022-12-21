@@ -1,3 +1,4 @@
+
 # SGCP : A semi-supervised pipeline for gene clustering using self-training approach in gene co-expression networks, [preprint](https://www.bioconductor.org/packages/release/bioc/html/SGC.html).
 
 ## SGCP Introduction
@@ -11,8 +12,8 @@ For instruction and steps please follow SGCP manual at its
 [Bioconductor page](https://www.bioconductor.org/packages/release/bioc/html/SGC.html). You can install the most updated SGCP through the GitHub repository as follow.
 
 ```{r}
-install.packages("devtools")
-devtools::install_github("na396/SGCP")
+#install.packages("devtools")
+#devtools::install_github("na396/SGCP")
 ```
 ## SGCP license
 GPL-3
@@ -23,7 +24,7 @@ UTF-8
 
 ## SGCP Input
 
-`SGCP` has three main input; `__expData_-`, `__geneID__`, and `__annotation_db__`. `__expData__` is a matrix or a dataframe of size `m*n` where `m` and `n` are the number of genes and samples respectively and it can be either DNA-microarray or RNA-seq . `SGCP` does not perform any normalization or correction for batch effects and it is assumed that these pre-processing steps have been already performed. `__geneID__` a vector of gene identifier correspond to rows in `__expData__`. `__aanotation_db__` is the name of a genome wide annotation package of the organism 
+`SGCP` has three main input; __expData__ , __geneID__, and __annotation_db__. __expData__ is a matrix or a dataframe of size `m*n` where `m` and `n` are the number of genes and samples respectively and it can be either DNA-microarray or RNA-seq . `SGCP` does not perform any normalization or correction for batch effects and it is assumed that these pre-processing steps have been already performed. __geneID__ a vector of gene identifier correspond to rows in __expData__. __anotation_db__ is the name of a genome wide annotation package of the organism 
 of interest for gene ontology (GO) enrichment step.`annotation_db` must be 
 installed by user prior using `SGCP`.
 

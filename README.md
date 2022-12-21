@@ -14,10 +14,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ## SGCP Introduction
 Self-training Gene Clustering Pipeline (`SGCP`) is a framework for gene co-expression network construction and analysis. The goal in these networks is to group the genes in a way that those with similar expression pattern fall within the same network cluster, commonly called module. `SGCP` consists of multiple novel steps that enable the computation of highly enriched modules in an unsupervised manner. But unlike all existing frameworks, it further incorporates a novel step that leverages Gene Ontology (GO) information in a semi-supervised clustering method that further improves the quality of the computed modules. `SGCP` results in highly enriched modules. 
 
-# SGCP Publication
+## SGCP Publication
 SGCP is under review. The preprint is available at [arXiv](https://arxiv.org/abs/2209.10545). 
 
-# SGCP Installation
+## SGCP Installation
 For instruction and steps please follow SGCP manual at its 
 [Bioconductor page](https://www.bioconductor.org/packages/release/bioc/html/SGC.html). You can install the most updated SGCP through the GitHub repository as follow.
 
@@ -32,7 +32,7 @@ GPL-3
 UTF-8
 
 
-# SGCP Input
+## SGCP Input
 
 `SGCP` has three main input; `__expData_-`, `__geneID__`, and `__annotation_db__`. `__expData__` is a matrix or a dataframe of size `m*n` where `m` and `n` are the number of genes and samples respectively and it can be either DNA-microarray or RNA-seq . `SGCP` does not perform any normalization or correction for batch effects and it is assumed that these pre-processing steps have been already performed. `__geneID__` a vector of gene identifier correspond to rows in `__expData__`. `__aanotation_db__` is the name of a genome wide annotation package of the organism 
 of interest for gene ontology (GO) enrichment step.`annotation_db` must be 
@@ -51,7 +51,7 @@ Here, are some important `annotation_db` along with its corresponding identifier
 Gene expression files can be found in [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/).
 
 
-## SGCP Input Cleaning
+### SGCP Input Cleaning
 In `SGCP`, it is assumed that genes
 
 * have expression values across all samples (i.e. no missing value).
@@ -60,7 +60,7 @@ In `SGCP`, it is assumed that genes
 * have GO annotation.
 
 
-# SGCP Input Example
+## SGCP Input Example
 Here, we give a brief example to `SGCP` input. To this end, we picked GSE181225 gene expression (for more information visit its [Gene Expression Omnibus page](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE181225)). Throughout this section, we need multiple packages of Bioconductor. 
 
 ```{r}
@@ -81,10 +81,7 @@ workingDir = "."
 setwd(workingDir)
 ```
 
-
-## Download the gene expression file
-
-GEOquery (for more information visit [GEOquery guide](https://bioconductor.org/packages/release/bioc/vignettes/GEOquery/inst/doc/GEOquery.html)) is a package in R that can be used for obtaining gene expression data from [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/). We use GEOquery to download the expression file for `GSE181225` from its [Gene Expression Omnibus page](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE181225)). As it is seen in the page, File `GSE181225_LNCaP_p57_VO_and_p57_PIM1_RNA_Seq_normalizedCounts.txt.gz` in  the `Supplementary file` section, contains the normalized gene expression. We have to download the `Supplementary file`. Please note that downloaded file can be found in `baseDir` .
+In the first place, we need to download the gene expression file. GEOquery (for more information visit [GEOquery guide](https://bioconductor.org/packages/release/bioc/vignettes/GEOquery/inst/doc/GEOquery.html)) is a package in R that can be used for obtaining gene expression data from [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/). We use GEOquery to download the expression file for `GSE181225` from its [Gene Expression Omnibus page](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE181225)). As it is seen in the page, File `GSE181225_LNCaP_p57_VO_and_p57_PIM1_RNA_Seq_normalizedCounts.txt.gz` in  the `Supplementary file` section, contains the normalized gene expression. We have to download the `Supplementary file`. Please note that downloaded file can be found in `baseDir` .
 
 ```{r}
 
@@ -101,7 +98,7 @@ head(df)
 ```
 
 
-Create _expData_, _geneID_, and __annotation_db__.
+Create __expData__, __geneID__, and __annotation_db__.
 ```{r}
 geneID <- df[,1]
 

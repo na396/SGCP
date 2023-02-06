@@ -176,7 +176,7 @@ if(numNoGO != 0){
 print(paste0("number of genes after dropping ", dim(genes)[1]))
 ```
 Produce the final __expData__, __geneID__, __annotation_db__. Now, the input is ready for `SGCP`. Refer to
-[SGCP Bioconductor page](https://www.bioconductor.org/packages/release/bioc/html/SGC.html) in order to see how to use this input in `SGCP`. 
+[SGCP Bioconductor page](https://bioc.ism.ac.jp/packages/devel/bioc/html/SGCP.html) in order to see how to use this input in `SGCP`. 
 
 ```{r}
 expData = expData

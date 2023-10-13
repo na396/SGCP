@@ -9,7 +9,7 @@ SGCP is under review. The preprint is available at [arXiv](https://arxiv.org/abs
 
 ## SGCP Installation
 For instruction and steps please follow SGCP manual at its 
-[Bioconductor page](https://bioc.ism.ac.jp/packages/devel/bioc/html/SGCP.html). You can install the most updated SGCP through the GitHub repository as follow.
+[Bioconductor page](https://bioconductor.org/packages/release/bioc/html/SGCP.html). You can install the most updated SGCP through the GitHub repository as follow.
 
 ```{r}
 #install.packages("devtools")

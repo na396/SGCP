@@ -348,7 +348,7 @@ SGCP_plot_pie <- function(df, tit = "GO Analysis",
 
     ppl <- temp %>%
             group_by(clusterNum, GOtype) %>%
-            summarise(max = max(logPvalue), count = n())
+        dplyr::summarise(max = max(logPvalue), count = n())
 
     cluslabs <- unique(ppl$clusterNum)
     onto <- c("overBP", "overCC", "overMF", "underBP", "underCC", "underMF")

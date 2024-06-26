@@ -24,13 +24,13 @@ checkSym <- function(mat, stp){
 
     sym_sym <- paste0(" output of ", stp)
     caption_sym <- paste0(sym_sym, " is not symmetric")
-    
+
     if(!isSymmetric(mat))
         stop(caption)
-    
+
     c01 <-  paste0(" output of ", stp)
     caption_01 <- paste0(c01, " are not in (0,1)")
-    
+
     if(length(table(between(mat, 0, 1)["FALSE"])) != 0)
         stop(caption_01)
 
@@ -61,7 +61,7 @@ sigmoid <- function(x, p=1, q=0){
 
 ################################################################################# calibration
 calibration <- function(v){
-    # perform calibraion on vector v
+    # perform calibration on vector v
 
     average <- mean(v)
     variance <- var(v)
@@ -210,7 +210,8 @@ adjacencyMatrix <- function(expData, calibration = FALSE, norm = TRUE,
         jpeg(hm)
         show(hm_plt)
         dev.off()
-        rm(hm_plt)}
+        rm(hm_plt)
+    }
 
 
     message("network is created, done!...\n")

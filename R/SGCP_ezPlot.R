@@ -322,9 +322,10 @@ SGCP_ezPLOT <- function(sgcp, expreData, keep = FALSE,
                 pl.final <- c(pl.final, setNames(list(jitt_plt1) ,
                                                 "InitialGOpvalueJitter"))
 
-            }else{
-                message("cannot plot density \n, make sure semilabel is TRUE in ezSGCP") }
-        }
+            }else{rm(jitt_plt1)}
+        }else{
+            message("cannot plot jitter \n, make sure semilabel is TRUE in ezSGCP")
+            }
     }
 
     ####################################### pvalue density1
@@ -428,12 +429,15 @@ SGCP_ezPLOT <- function(sgcp, expreData, keep = FALSE,
                 pdf.out[[counter]] <- recordPlot()
                 counter <- counter + 1}
 
+
             if(keep){
                 pl.final <- c(pl.final, setNames(list(jitt_plt2) ,
                                                 "FinalGOpvalueJitter"))
 
-            }else{
-                message("cannot plot density \n, make sure semilabel is TRUE in ezSGCP") }
+            }else{rm(jitt_plt2)}
+
+        }else{
+        message("cannot plot jitter \n, make sure semilabel is TRUE in ezSGCP")
         }
     }
 

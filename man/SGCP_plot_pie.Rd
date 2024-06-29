@@ -1,9 +1,9 @@
 %  plot geneOntology
 \name{SGCP_plot_pie}
 \alias{SGCP_plot_pie}
-\title{Pie Chart of Gene Ontology Terms In SGCP Pipeline}
+\title{Gene ontology analysis pie chart in the SGCP pipeline}
 \description{
-    Plots the test direction plus ontology of gene ontology terms in SGCP pipeline.
+    Generate a pie chart illustrating the ontology and test direction of gene ontology terms across the SGCP pipeline
 }
 \usage{
     SGCP_plot_pie(df, tit = "GO Analysis",
@@ -11,11 +11,11 @@
 
 }
 \arguments{
-    \item{df}{the `GOresults` dataframe returned by geneOntology function in SGCP pipeline }
-    \item{tit}{plot title, default "GO Analysis"}
-    \item{xname}{x-axis title, default "module"}
-    \item{yname}{y-axis title, default "count"}
-    \item{posx}{a numeric for label position in pie chart, the higher the number the futhur the label will be from pie chart.}
+    \item{df}{The \code{GOresults} dataframe returned by the \code{geneOntology} function in the SGCP pipeline.}
+    \item{tit}{Plot title (default: "GO Analysis")}
+    \item{xname}{X-axis title (default: "module")}
+    \item{yname}{Y-axis title (default: "count")}
+    \item{posx}{Numeric value for label position in the pie chart. A higher number places labels further from the pie chart.}
 }
 
 

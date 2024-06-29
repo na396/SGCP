@@ -1,23 +1,23 @@
 % plot silhouette
 \name{SGCP_plot_silhouette}
 \alias{SGCP_plot_silhouette}
-\title{Plots Gene Silhouette Index In SGCP Pipeline}
+\title{Cluster silhouette index chart in the SGCP Pipeline}
 \description{
-    Plots the Silhouette index of genes in SGCP pipeline.
+     Generates a chart displaying the cluster silhouette index in the SGCP pipeline.
 }
 \usage{
     SGCP_plot_silhouette(df, tit = "Gene Silhouette Index",
                         xname = "genes", yname = "silhouette index")
 }
 \arguments{
-    \item{df}{the silhouette dataframe returned by clustering function in SGCP pipeline}
-    \item{tit}{plot title, default "Gene Silhouette Index"}
-    \item{xname}{x-axis title, default "genes"}
-    \item{yname}{y-axis title, default "silhouette index"}
+    \item{df}{The silhouette dataframe returned by the \code{clustering} function in the SGCP pipeline.}
+    \item{tit}{Plot title (default: "Gene Silhouette Index")}
+    \item{xname}{X-axis title (default: "genes")}
+    \item{yname}{Y-axis title (default: "silhouette index")}
 }
 
 \details{
-In order to plot silhouette index, `sil` parameter in clustering function must be set to TRUE.
+In order to plot silhouette index, \code{sil} argument in the \code{clustering} function must be set to \code{TRUE}.
 }
 
 

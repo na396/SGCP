@@ -1,9 +1,9 @@
 % networkClustering description
 \name{clustering}
 \alias{clustering}
-\title{Perform Network Clustering step In SGCP Pipeline}
+\title{Perform network clustering step in the SGCP pipeline}
 \description{
-    It performs clustering on the adjacency network of gene co-expression network in SGCP pipeline. To this end, it firstly transforms the adjacency matrix of size n*n into new dimension Y of n*n using gaph Laplacian. It then, calculates number of cluster k based on three methods "relativeGap", "secondOrderGap", and "additiveGap". For each method, it performs kmeans on Y and the corresponding k as the input. Then it calculates conductance index for the clusters in the methods, and for each method, it picks the cluster that has smallest conductance index. Finally it performs gene ontology enrichment on those selected clusters to finalize k. At the end, it returns the result of the kmeans clustering on the selected method along with the transformed matrix Y, and some additional information. At this step, initial clusters are produced.
+    It performs clustering on the adjacency network of gene co-expression network in SGCP pipeline. Initially, it transforms the n*n adjacency matrix into a new dimension Y. Subsequently, it determines the number of clusters k using three methods: "relativeGap", "secondOrderGap", and "additiveGap". For each method, k-means clustering is applied to Y with the determined k as input. Conductance indices are computed for the clusters within each method, and the cluster with the smallest conductance index is selected for further analysis. Following this, gene ontology enrichment analysis is performed on the selected clusters to finalize the optimal k. The pipeline concludes by returning the result of k-means clustering based on the selected method, along with the transformed matrix Y and additional information. This step produces the initial clusters.
 }
 \usage{
     clustering(adjaMat, geneID , annotation_db ,
@@ -13,73 +13,52 @@
                 saveOrig = TRUE, n_egvec = 200, sil = FALSE)
 }
 \arguments{
-    \item{adjaMat}{adjacency matrix of n*n where n is the number of the genes,
-                    this matrix is squared symmetric with values in (0, 1)
-                    and 0 diagonal.
-                    It is the output of adjacencyMatrix function of SGCP.}
-    \item{geneID}{a vector containing the genes IDs of size n
-                where n is the number of genes.}
-    \item{annotation_db}{a string indicating the genomic wide annotation database.}
-    \item{kopt}{an integer denotes the optimal number of clusters k by the user,
-                default is NULL.}
-    \item{method}{method for identifying the number of clusters k, default NULL,
-                either "relativeGap", "secondOrderGap", "additiveGap", or NULL.}
-    \item{func.GO}{a function for gene ontology validation,
-                    default is sum.}
-    \item{func.conduct}{a function for conductance validation,
-                        default is min.}
-    \item{maxIter}{an integer,
-                identifies the maximum number of iteration for kmeans.}
-    \item{numStart}{an integer,
-                    identifies the number of start for kmeans.}
-    \item{eff.egs}{boolean, default TRUE,
-                    if TRUE, used \code{eigs_sym} ti calculate the eigenvalues and eigenvectors, more efficient than R default                      function }
-    \item{saveOrig}{boolean, default TRUE,
-                    if TRUE, keeps the transformation matrix.}
-    \item{n_egvec}{an integer less than 200, default = 200,
-                indicates the number of columns of transformation matrix to be kept}
-    \item{sil}{boolean, default FALSE,
-            if TRUE, calculates silhouette index for each cluster.}
+    \item{adjaMat}{A squared symmetric matrix of size n*n with values in (0, 1) and 0 diagonal. This is the output of the \code{adjacencyMatrix} function in SGCP.}
+    \item{geneID}{A vector containing gene IDs of size n, where n is the number of genes.}
+    \item{annotation_db}{A string indicating the genomic-wide annotation database.}
+    \item{kopt}{An integer denoting the optimal number of clusters \( k \) chosen by the user (default: NULL).}
+    \item{method}{Method for identifying the number of clusters \( k \) (default: NULL). Options include "relativeGap", "secondOrderGap", "additiveGap", or \code{NULL}.}
+    \item{func.GO}{A function for gene ontology validation (default: sum).}
+    \item{func.conduct}{A function for conductance validation (default: min).}
+    \item{maxIter}{An integer specifying the maximum number of iterations for k-means clustering.}
+    \item{numStart}{An integer indicating the number of starts for k-means clustering.}
+    \item{eff.egs}{Boolean (default: TRUE). If TRUE, uses \code{eigs_sym} to calculate eigenvalues and eigenvectors, which is more efficient than R's default function.}
+    \item{saveOrig}{Boolean (default: TRUE). If TRUE, keeps the transformation matrix.}
+    \item{n_egvec}{An integer (default: 200) specifying the number of columns of the transformation matrix to retain. Should be less than 200.}
+    \item{sil}{Boolean (default: FALSE). If TRUE, calculates silhouette index for each cluster.}
+
 
     }
 
 \details{
-If \code{kopt} is not null, SGCP will find clusters based on \code{kopt}. Otherwise,
-if method is not null, SGCP will pick k based on the selected method. Otherwise,
-if \code{geneID} or \code{annotation_db} is null, SGCP will determine the optimal method and its
-corresponding number of cluster based on condutance validation. It picks a method
-that \code{func.conduct} on its cluster is minimum. Otherwise,
-SGCP will use gene ontology validation (by default) to find the optimal method and
-its corresponding number of clusters. To this end, it will perform gene ontology
-enrichment on the cluster with minimum conductanc index per method and pick the
-one that has the maximum \code{func.GO} over -log10 of p-values.
-
+If \code{kopt} is not null, SGCP will determine clusters based on the specified \code{kopt}. Otherwise, if \code{method} is not \code{NULL}, SGCP will select k using the specified method. If both \code{geneID} and \code{annotation_db} are \code{NULL}, SGCP will determine the optimal method and its corresponding number of clusters based on conductance validation. It selects a method where the conductance, evaluated by \code{func.conduct}, is minimized. Alternatively, SGCP defaults to gene ontology validation to find the optimal method and its corresponding clusters. It performs gene ontology enrichment on clusters, selecting the method where the cluster with the minimum conductance index yeilds the highest \code{func.GO} over log10 of the p-values.
 }
 
 \value{
-a list containing some of the following depending on the initial call
-    \item{dropped.indices}{a vector of dropped gene indices.}
-    \item{geneID}{a vector of geneIDs.}
-    \item{method}{indicates the selected method for number of cluster.}
-    \item{k}{selected number of clusters.}
-    \item{Y}{transformed matrix with 2*k columns.}
-    \item{X}{eigenvalues correspond to 2*k columns in Y.}
-    \item{cluster}{an object of class \code{kmeans}.}
-    \item{clusterLabels}{a vector containing the cluster label per gene, there is a 1-to-1 correspondence                        between geneID and clusterLabes}
-    \item{conductance}{a list containing mean and median, and individual cluster conductance index for                              clusters per method. Index in `clusterConductance` field denotes the cluster label                          and the value shows the conductance index.}
-    \item{cvGOdf}{a dataframe used for gene ontology validation. For each method, it returns the gene                           ontology enrichment result on the cluster with minimum conductance index.}
-    \item{cv}{an string indicates the validation method for number of cluster,
-                "cvGO": if gene ontology validation used,
-                "cvConductance": if conductance validation used,
-                "userMethod": if user defined the method,
-                "userkopt": if user defines the kopt.}
-    \item{clusterNumberPlot}{an object of class \code{ggplot2} for
-            relativeGap"", "secondOrderGap", and "additiveGap".}
-    \item{silhouette}{a dataframe that indicates the silhouette for genes.}
-    \item{original}{a list with matrix transformation and
-                    corresponding eigenvalues and n_egvec,
-                    where n_egvec top columns of transformation is kept.}
+    \itemize{
+        \item{\code{dropped.indices}}{ A vector of dropped gene indices.}
+        \item{\code{geneID}}{ A vector of gene IDs.}
+        \item{\code{method}}{ Indicates the selected method for number of clusters.}
+        \item{\code{k}}{ Selected number of clusters.}
+        \item{\code{Y}}{ Transformed matrix with 2*k columns.}
+        \item{\code{X}}{ Eigenvalues corresponding to 2*k columns in Y.}
+        \item{\code{cluster}}{ An object of class \code{kmeans}.}
+        \item{\code{clusterLabels}}{ A vector containing the cluster label per gene, with a 1-to-1 correspondence to geneID.}
+        \item{\code{conductance}}{ A list containing mean and median conductance indices for clusters per method. The index in \code{clusterConductance} field denotes the cluster label and the value shows the conductance index.}
+        \item{\code{cvGOdf}}{ A dataframe used for gene ontology validation. For each method, it returns the gene ontology enrichment result on the cluster with the minimum conductance index.}
+        \item{\code{cv}}{ A string indicating the validation method for number of clusters}:
+        \itemize{
+            \item{"cvGO": Gene ontology validation used.}
+            \item{"cvConductance": Conductance validation used.}
+            \item{"userMethod": User-defined method.}
+            \item{"userkopt": User-defined \code{kopt}.}
+        }
 
+        \item{\code{clusterNumberPlot}}{ An object of class \code{ggplot2} for relativeGap, secondOrderGap, and additiveGap.}
+        \item{\code{silhouette}} {A dataframe indicating the silhouette index for genes.}
+        \item{\code{original}}{ A list with matrix transformation, corresponding eigenvalues, and \code{n_egvec}, where the top \code{n_egvec} columns of the transformation are retained.}
+
+    }
 }
 
 \references{

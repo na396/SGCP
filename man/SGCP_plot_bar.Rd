@@ -1,9 +1,9 @@
 %  plot mean
 \name{SGCP_plot_bar}
 \alias{SGCP_plot_bar}
-\title{Mean Over Gene Ontology Enrichment p-values In SGCP Pipeline}
+\title{Mean p-value bar chart for gene ontology enrichment in the SGCP pipeline}
 \description{
-    Plots the mean over gene ontology enrchment p-values in SGCP pipeline.
+    Generates a bar chart illustrating the average p-values from gene ontology enrichment across the SGCP pipeline.
 }
 \usage{
 
@@ -11,10 +11,10 @@
                 xname = "module", yname = "-log10 p-value")
 }
 \arguments{
-    \item{df}{the `GOresults` dataframe returned by geneOntology function in SGCP pipeline }
-    \item{tit}{plot title, default"mean -log10 p-values"}
-    \item{xname}{x-axis title, default "module"}
-    \item{yname}{y-axis title, default either "-log10 p-value"}
+     \item{df}{The \code{GOresults} dataframe returned by the \code{geneOntology} function in the SGCP pipeline.}
+      \item{tit}{Plot title (default: "Mean -log10 p-values")}
+      \item{xname}{X-axis title (default: "module")}
+      \item{yname}{Y-axis title (default: "-log10 p-value")}
 }
 
 

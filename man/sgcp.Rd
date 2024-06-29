@@ -1,19 +1,63 @@
 \name{sgcp}
 \docType{data}
 \alias{sgcp}
-\title{An example of output of \code{zSGCP} function in SGCP pipeline.}
+\title{An example of the output of \code{ezSGCP} function in the SGCP pipeline}
 \description{
-This is an example of \code{ezSGPC} function output. This function is the automatic SGCP.}
+This is an example of the output from the \code{ezSGCP} function, representing the entire SGCP pipeline.Initially, the adjacency matrix is generated using the \code{adjacencyMatrix} function within the SGCP framework applied to the \code{cheng} dataset. This adjacency matrix serves as input to the \code{clustering} function, resulting in the clustering outcome stored in \code{resClus}. The clustering result, \code{resClus}, is subsequently utilized in the \code{geneOntology} function to derive \code{resInitialGO}, which captures the initial gene ontology (GO) enrichment results. The \code{resInitialGO} output is then processed through the \code{semiLabeling} function to produce \code{resSemiLabel}, indicating the semi-labeled genes based on their clustering characteristics. This semi-labeled information is further employed in the \code{semiSupervised} function, yielding \code{resSemiSupervised}, which includes the final supervised classification outcomes for the unremarkable genes. Finally, the results from \code{resSemiSupervised} are fed into the \code{geneOntology} function once more to generate \code{resFinalGO}, which represents the final GO enrichment analysis.}
 
 \usage{data(sgcp)}
-\format{An object of clas \code{list} containing the \code{ezSGCP} function information.}
+\format{An object of class \code{list} containing the \code{ezSGCP} function information.}
 
-\details{\code{sgcp} contains a list of clustering, initial.GO, semiLabeling, semiSupervised, final.GO fields, which contains the infromation of corresponding step.
-\code{semilabel}:Boolean, indicates if semilabeling step is performed,
-\code{clusterLabels}:a dataframe with geneID and its corresponding initial and final labels. In the clustering field,         following information is provided; \code{dropped.indices}:dropped gene indices, \code{geneID}:a vector of geneIDs,            \code{method}:indicates the selected method for number of cluster, \code{k}:selected number of clusters, \code{Y}:            transformed matrix with 2*k columns, \code{X}:eigenvalues correspond to 2*k columns in Y, \code{cluster}:object rof class     \code{kmeans}, \code{clusterLabels}:a vector containing the cluster label, for each gene,
-there is a 1-to-1 correspondance between geneID and clusterLabes, \code{conductance}:a list containing mean and median,       andindividual cluster conductance index for clusters. In  each method, the clusterConductance field denote the cluster        label with its corresponding conductance index, \code{cvGOdf}:a dataframe used for gene ontology validation, for each        method, it shows the gene ontology enrichment on the cluster with smallest conductance index, \code{cv}:an string indicates the validation method for number of cluster, "cvGO" shows that gene ontology validation used, \code{clusterNumberPlot}:an     objet of class \code{ggplot2} for relativeGap"", "secondOrderGap", and "additiveGap", \code{silhouette}:a dataframe that     indicates the silhouette for genes, \code{original}:a list with matrix transformation and corresponding eigenvalues and n_egvec, where n_egvec top columns of tranformation is kept, initial.GO field, a list of \code{GOresults}:a dataframe containing the summary of the information of GOTerms, \code{FinalGOTermGenes}:a list containing the geneIDs of each GOTerms per cluster, semiLabeling field, a list of \code{cutoff}:a numeric in (0,1) which indicates the selected cutoff, \code{geneLabel}:a dataframe containing the information of geneID and its corresponding cluster label if is remarkable otherwise NA, semiSupervised field which is a list of \code{semiSupervised}:an object of classification result, \code{prediction}:a vector of predicted labels for unremarkable genes, \code{FinalLabeling}:a dataframe of geneID with its corresponding semilabel and final label final.GO field, a list of \code{GOresults}:a dataframe containing the summary of the information of GOTerms, \code{FinalGOTermGenes}:a list containing the geneIDs of each GOTerms per cluster.
+
+\details{
+\code{sgcp} contains a list with the following fields:
+\itemize{
+  \code{clustering}: List of clustering
+  \itemize{
+  \item{\code{dropped.indices}:} Dropped gene indices.
+    \item{\code{geneID}:} Vector of geneIDs.
+    \item{\code{method}:} Selected method for determining the number of clusters.
+    \item{\code{k}:} Selected number of clusters.
+    \item{\code{Y}:} Transformed matrix with 2*k columns.
+    \item{\code{X}:} Eigenvalues corresponding to the 2*k columns in Y.
+    \item{\code{cluster}:} Object of class \code{kmeans}.
+    \item{\code{clusterLabels}:} Vector containing cluster labels for each gene.
+    \item{\code{conductance}:} List containing mean, median, and individual cluster conductance indices. Each method's \code{clusterConductance} field denotes the cluster label with its corresponding conductance index.
+  \item{\code{cvGOdf}:} DataFrame used for gene ontology validation. For each method, it shows gene ontology enrichment on the cluster with the smallest conductance index.
+  \item{\code{cv}:} String indicating the validation method for the number of clusters (\code{"cvGO"} for gene ontology validation).
+  \item{\code{clusterNumberPlot}:} Object of class \code{ggplot2} for displaying relativeGap, secondOrderGap, and additiveGap.
+  \item{\code{silhouette}:} DataFrame indicating silhouette values for genes.
+  \item{\code{original}:} List with matrix transformation, eigenvalues, and \code{n_egvec}, retaining the top columns of transformation.
+
+  }
+
+  \code{initial.GO}: List of GO term analysis results for initial clusters
+  \itemize{
+    \item{\code{GOresults}: DataFrame summarizing GO term information.}
+    \item{\code{FinalGOTermGenes}: List containing geneIDs of each GO term per cluster.}
+  }
+
+  \code{semiLabeling}: List of semi-labeling results
+  \itemize{
+    \item{\code{cutoff}}: Numeric indicating selected cutoff.
+    \item{\code{geneLabel}}: DataFrame with geneID and corresponding cluster label (or NA if unremarkable).
+  }
+
+  \code{semiSupervised}: List of semi-supervised learning results
+  \itemize{
+  \item{\code{semiSupervised}: Object of classification result.}
+  \item{\code{prediction}: Vector of predicted labels for unremarkable genes.}
+  \item{\code{FinalLabeling}: DataFrame of geneID with corresponding semi-label and final label.}
+  }
+
+  \code{final.GO}}: List of GO term analysis results for final modules
+  \itemize{
+  \item{\code{GOresults}: DataFrame summarizing GO term information.}
+  \item{\code{FinalGOTermGenes}: List containing geneIDs of each GO term per cluster.}
+  }
+
+
 }
-
 
 \seealso{
     \href{https://github.com/na396/SGCP}{SGCP Toturial}

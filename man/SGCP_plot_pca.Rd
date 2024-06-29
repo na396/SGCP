@@ -1,19 +1,18 @@
 % plot pca
 \name{SGCP_plot_pca}
 \alias{SGCP_plot_pca}
-\title{Plots PCA Of The Data In SGCP Pipeline}
+\title{PCA visualization in the SGCP Pipeline}
 \description{
-    Plots PCA with and without labels in SGCP pipeline.
+    Generates Principal Component Analysis (PCA) of the gene expression and transformed gene expression; comparision with and without labels.
 }
 \usage{
     SGCP_plot_pca(m, clusLabs, tit = "PCA plot", ps = .5)
 }
 \arguments{
-    \item{m}{a numeric matrix of n*m}
-    \item{clusLabs}{NULL or a vector of size n showing cluster labels,
-            there 1-to-1 correspondance between the rows in m and clusLabs}
-    \item{tit}{plot title, default "PCA plot"}
-    \item{ps}{point size, default .5}
+    \item{m}{A numeric matrix of size n*m.}
+    \item{clusLabs}{Either \code{NULL} or a vector of size n indicating cluster labels. There is a 1-to-1 correspondence between the rows in \code{m} and \code{clusLabs}.}
+    \item{tit}{Plot title (default: "PCA plot")}
+    \item{ps}{Point size (default: 0.5)}
 }
 
 

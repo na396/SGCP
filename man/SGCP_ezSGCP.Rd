@@ -1,9 +1,9 @@
 % ezSGCP
 \name{ezSGCP}
 \alias{ezSGCP}
-\title{Performs All SGCP pipeline In One Step}
+\title{Integrated execution of the SGCP pipeline}
 \description{
-    On step SGCP pipeline for gene co-expression network construction and analysis. It takes the gene expression and gene IDs, along with annotation_db and performs all steps of SGCP in a single function. It firstly perform network construction step and build the adjacency matrix. It then apply network clustering step using to find the intial clusters. Using gene ontology enrichent step, it finds and  divides the genes into set of remarkable and unremarkable and use this for the next step to semi-label the data and convert the problem into smei-supervised. It used the remarkable genes as the training set to train a supervised model and make prediction for unremarakable gene and produce the final modules. Finaly, it performs one more gene ontology step to see the module enrichment.
+The SGCP pipeline for gene co-expression network construction and analysis integrates multiple steps into a single function. It begins with network construction, where gene expression data and gene IDs are utilized alongside an annotation database to build an adjacency matrix. Next, network clustering identifies initial clusters. Gene ontology enrichment distinguishes genes into remarkable and unremarkable sets, enabling semi-labeling to convert the problem into semi-supervised learning. Remarkable genes serve as the training set for a supervised model, predicting labels for unremarkable genes and producing final modules. Finally, another gene ontology step evaluates module enrichment.
 }
 \usage{
     ezSGCP(expData, geneID, annotation_db, semilabel = TRUE,
@@ -19,162 +19,96 @@
         model = "knn", kn = NULL)
 }
 \arguments{
-    \item{expData}{a dataframe or matrix containing the expression data,
-        rows correspond to genes and columns to samples.}
-    \item{geneID}{a vector containing the genes IDs of size n
-        where n is the number of genes.}
-    \item{annotation_db}{a string indicating the genomic wide annotation database.}
-    \item{semilabel}{Boolean, default TRUE,
-                    if TRUE, semilabeling step will be performed.}
-    \item{calib}{boolean, default FALSE,
-        if TRUE it performs calibration step.}
-    \item{norm}{boolean, default TRUE,
-        if TRUE will divide each genes (rows) by its norm2.}
-    \item{tom}{boolean, default TRUE,
-        if TRUE it adds TOM to the network.}
-    \item{saveAdja}{boolean, default FALSE,
-        if TRUE, the adjancency matrix will be saved.}
-    \item{adjaNameFile}{string indicates the name of file for saving adjancency matrix.}
-    \item{hm}{string indicates the name of file for saving adjancency matrix heat map.}
-    \item{kopt}{an integer denotes the optimal number of clusters k by the user,
-        default is NULL.}
-    \item{method_k}{method for identifying the number of clusters k, default NULL,
-        either "relativeGap", "secondOrderGap", "additiveGap", or NULL.}
-    \item{f.GO}{a function for gene ontology validation,
-                    default is sum.}
-    \item{f.conduct}{a function for conductance validation,
-                        default is min.}
-    \item{maxIteration}{an integer,
-                    identifies the maximum number of iteration for kmeans.}
-    \item{numberStart}{an integer,
-                    identifies the number of start for kmeans.}
-    \item{eff.egs}{a boolean, default TRUE,
-                    if TRUE it uses \code{eigs_sym} to calculate the eigenvalues and eigenvectors, more efficient than R default                      function}
-    \item{saveOrig}{boolean, default TRUE,
-                    if TRUE, keeps the transformation matrix.}
-    \item{n_egvec}{either "all" or an integer, default = 100,
-                indicates the number of columns of transformation matrix to be kept}
-    \item{sil}{boolean, default FALSE,
-            if TRUE, calculates silhouette index for each cluster.}
-
-    \item{dir}{test direction, default c("over", "under"),
-        for over-represented, or under-represented GO terms.}
-    \item{onto}{GO ontologies, default c("BP", "CC", "MF"),
-        BP: Biological Process,
-        CC: Cellular Component,
-        MF: Molecular Function.}
-    \item{hgCut}{a numeric value in (0,1) as the p-value cutoff, default 0.05,
-        GO terms smaller than hgCutoff value are kept.}
-    \item{condTest}{Boolean, default TRUE,
-        if TRUE conditional hypergeometric test is performed.}
-    \item{cutoff}{a numeric in (0, 1) default NULL,
-        is a base line for GO term significancy.}
-    \item{percent}{a number in (0,1) default 0.1,
-        indicate the percentile for finding top GO terms.}
-    \item{stp}{a number in (0,1) default 0.01,
-        indicates increasing value to be added to percent parameter.}
-    \item{model}{either "knn" or "lr" for classification model,
-        knn: k nearest neighbors,
-        lr: logistic regression.}
-    \item{kn}{an integer default NULL indicating the number of neighbors in knn,
-        if kn is NULL, then
-        kn = 20 : (20 + 2 * k) if 2 * k < 30 otherwise 20 : 30, where
-        k is the numbber of remarkable cluster}
+  \item{expData}{A dataframe or matrix containing the expression data, where rows correspond to genes and columns to samples.}
+  \item{geneID}{A vector containing the gene IDs of size n, where n is the number of genes.}
+  \item{annotation_db}{A string indicating the genomic-wide annotation database.}
+  \item{semilabel}{Logical, default \code{TRUE}. If \code{TRUE}, performs semilabeling step.}
+  \item{calib}{Logical, default \code{FALSE}. If \code{TRUE}, performs calibration step.}
+  \item{norm}{Logical, default \code{TRUE}. If \code{TRUE}, divides each gene (row) by its norm2.}
+  \item{tom}{Logical, default \code{TRUE}. If \code{TRUE}, adds TOM to the network.}
+  \item{saveAdja}{Logical, default \code{FALSE}. If \code{TRUE}, saves the adjacency matrix.}
+  \item{adjaNameFile}{String indicating the name of the file for saving the adjacency matrix.}
+  \item{hm}{String indicating the name of the file for saving the adjacency matrix heatmap.}
+  \item{kopt}{An integer indicating the optimal number of clusters k chosen by the user, default is \code{NULL}.}
+  \item{method_k}{Method for identifying the number of clusters k, default \code{NULL}. Options are "relativeGap", "secondOrderGap", "additiveGap", or \code{NULL}.}
+  \item{f.GO}{A function for gene ontology validation, default is sum.}
+  \item{f.conduct}{A function for conductance validation, default is min.}
+  \item{maxIteration}{An integer indicating the maximum number of iterations for kmeans.}
+  \item{numberStart}{An integer indicating the number of starts for kmeans.}
+  \item{eff.egs}{Boolean, default \code{TRUE}. If \code{TRUE}, uses \code{eigs_sym} to calculate eigenvalues and eigenvectors, which is more efficient than R's default function.}
+  \item{saveOrig}{Boolean, default \code{TRUE}. If \code{TRUE}, keeps the transformation matrix.}
+  \item{n_egvec}{Either "all" or an integer indicating the number of columns of the transformation matrix to keep, default is 100.}
+  \item{sil}{Logical, default \code{FALSE}. If \code{TRUE}, calculates silhouette index for each cluster.}
+  \item{dir}{Test direction for GO terms, default c("over", "under").}
+  \item{onto}{GO ontologies to consider, default c("BP", "CC", "MF").}
+  \item{hgCut}{Numeric value in (0,1) as the p-value cutoff for GO terms, default 0.05.}
+  \item{condTest}{Logical, default \code{TRUE}. If \code{TRUE}, performs conditional hypergeometric test.}
+  \item{cutoff}{Numeric in (0, 1) default \code{NULL}, baseline for GO term significance.}
+  \item{percent}{Numeric in (0,1) default 0.1, percentile for finding top GO terms.}
+  \item{stp}{Numeric in (0,1) default 0.01, increasing value for percent parameter.}
+  \item{model}{Type of classification model, either "knn" (k nearest neighbors) or "lr" (logistic regression).}
+  \item{kn}{Integer indicating the number of neighbors in knn, default \code{NULL}.}
 }
-
 \details{
-For clustering step, if kopt is not null, SGCP will find clusters based on kopt. Otherwise,
-if method is not null, SGCP will pick k based on the selected method. Otherwise,
-if geneID or annotation_db is null, SGCP will determine the optimal method and its
-corresponding number of cluster based on condutance validation. It picks a method
-that func.conduct on its cluster is minimum. Otherwise,
-SGCP will use gene ontology validation (by default) to find the optimal method and
-its corresponding number of clusters. To this end, it will perform gene ontology
-enrichment on the cluster with minimum conductanc index per method and pick the
-one that has the maximum func.GO over -log10 of p-values. In semilabeling step,
-gene associated to the GO terms more significant than cutoff value are remarkable.
-If cutoff value is NULL, SGCP will find the cutoff depend on the GO terms significant
-level. Otherwise, SGCP picks the top percent (by default 0.1) GO terms from all
-clusters collectively, and consider the genes associated to those as remakable.
-If all remarkable genes come from a single cluster,
-then SGCP will increase the precent by 0.01 to find the remarkable and
-unremarkable genes. It repeats this process until all remarkable genes come from
-at least two clusters. In semi-supervise step, remarkable clusters are the
-clusters that have at least one remarkable gene.
-}
+For clustering step; If \code{kopt} is not \code{NULL}, SGCP finds clusters based on \code{kopt}. If \code{method_k} is not \code{NULL}, SGCP picks \code{k} based on the selected method (\code{"relativeGap"}, \code{"secondOrderGap"}, \code{"additiveGap"}). If \code{geneID} or \code{annotation_db} is \code{NULL}, SGCP determines the optimal method and corresponding number of clusters based on conductance validation. It selects the method where \code{func.conduct} on its clusters is minimized.
+Otherwise, SGCP uses gene ontology validation (by default) to find the optimal method and its corresponding number of clusters. It performs gene ontology enrichment on the cluster with the minimum conductance index per method and selects the method that maximizes \code{func.GO} over -log10 of p-values.
+
+
+For semilabeling step; Genes associated with GO terms more significant than \code{cutoff} value are considered remarkable. If \code{cutoff} value is \code{NULL}, SGCP determines the cutoff based on the significance level of GO terms.
+SGCP selects the top \code{percent} (default 0.1) GO terms from all clusters collectively and considers genes associated with those as remarkable. If all remarkable genes come from a single cluster, SGCP increases the percent by 0.01 until remarkable genes come from at least two clusters.
+
+
+For semi-supervise step; Remarkable clusters are those that have at least one remarkable gene. SGCP performs semi-supervised classification using the transformed matrix from clustering and gene semilabels from semilabeling function. It uses remarkable genes as the training set to train either a "k nearest neighbor" (knn) or "logistic regression" (lr) model and makes predictions for unremarkable genes to produce the final modules.}
+
+
 
 \value{
-It returns a list of clustering, initial.GO, semiLabeling, semiSupervised,
-final.GO fields, which contains the infromation of corresponding step.
-    \item{semilabel}{Boolean, indicates if semilabeling step is performed.}
-    \item{clusterLabels}{a dataframe with geneID and its corresponding initial
-    and final labels.}
-    clustering field, a list of
-    \item{dropped.indices}{dropped gene indices.}
-    \item{geneID}{a vector of geneIDs.}
-    \item{method}{indicates the selected method for number of cluster.}
-    \item{k}{selected number of clusters.}
-    \item{Y}{transformed matrix with 2*k columns.}
-    \item{X}{eigenvalues correspond to 2*k columns in Y.}
-    \item{cluster}{object rof class \code{kmeans}.}
-    \item{clusterLabels}{a vector containing the cluster label, for each gene,
-                        there is a 1-to-1 correspondance between geneID and clusterLabes.}
-    \item{conductance}{a list containing mean and median, and
-                    individual cluster conductance index for clusters. In
-                    each method, the clusterConductance field denote the cluster label
-                    with its corresponding conductance index.}
-    \item{cvGOdf}{a dataframe used for gene ontology validation,
-                for each method, it shows the gene ontology enrichment
-                on the cluster with smallest conductance index.}
-    \item{cv}{an string indicates the validation method for number of cluster,
-                "cvGO": if gene ontology validation used,
-                "cvConductance": if conductance validation used,
-                "userMethod": if user defined the method,
-                "userkopt": if user defines the kopt}
-    \item{clusterNumberPlot}{an objet of class \code{ggplot2} for
-            relativeGap"", "secondOrderGap", and "additiveGap".}
-    \item{silhouette}{a dataframe that indicates the silhouette for genes.}
-    \item{original}{a list with matrix transformation and
-                    corresponding eigenvalues and n_egvec,
-                    where n_egvec top columns of tranformation is kept.}
-    initial.GO field, a list of
-    \item{GOresults}{a dataframe containing the summary of the information of GOTerms,
-                clusterNum: indicates the cluster label,
-                GOtype: indicates the test directions plut ontology,
-                GOID: unique GO term id,
-                Pvalue: the p-value of hypergeometric test for the GO term,
-                OddsRatio: the odds ratio of the GO term,
-                ExpCount: expected count value for genes associated the GO term,
-                Count: actual count of the genes associated to the GO term in the cluster,
-                Size: actual size of the genes associated to the GO term in the entire geneIDs,
-                Term: description of the GO term.}
+    Returns a list with the following fields, depending on the initial call:
+    \itemize{
+      \item{\code{semilabel}}{ Boolean indicating if semilabeling step was performed.}
+      \item{\code{clusterLabels}}{ DataFrame with geneID and its corresponding initial and final labels.}
+      \item{\code{clustering}}{ List containing clustering information:}
+      \itemize{
+        \item{\code{dropped.indices}}{ Vector of dropped gene indices.}
+        \item{\code{geneID}}{ Vector of geneIDs.}
+        \item{\code{method}}{ Method selected for number of clusters.}
+        \item{\code{k}}{ Selected number of clusters.}
+        \item{\code{Y}}{ Transformed matrix with 2*k columns.}
+        \item{\code{X}}{ Eigenvalues corresponding to 2*k columns in Y.}
+        \item{\code{cluster}}{ Object of class \code{kmeans}.}
+        \item{\code{clusterLabels}} {Vector containing cluster labels for each gene.}
+        \item{\code{conductance}}{ List with mean, median, and individual cluster conductance indices. \code{clusterConductance} field denotes the cluster label and its conductance index.}
+        \item{\code{cvGOdf}}{ DataFrame used for gene ontology validation. For each method, shows GO enrichment on the cluster with smallest conductance index.}
+        \item{\code{cv}}{ String indicating validation method for number of clusters: "cvGO", "cvConductance", "userMethod", or "userkopt".}
+        \item{\code{clusterNumberPlot}}{ Object of class \code{ggplot2} for visualizing cluster number selection methods.}
+        \item{\code{silhouette}}{ DataFrame indicating silhouette indices for genes.}
+        \item{\code{original}}{ List with matrix transformation, corresponding eigenvalues, and \code{n_egvec} top columns of transformation matrix kept.} }
 
-    \item{FinalGOTermGenes}{a list containing the geneIDs of each GOTerms per cluster.}
-    semiLabeling field, a list of
-    \item{cutoff}{a numeric in (0,1) which indicates the selected cutoff.}
-    \item{geneLabel}{a dataframe containing the information of geneID and
-                its corresponding cluster label if is remarkable otherwise NA.}
-    semiSupervised field which is a list of
-    \item{semiSupervised}{an object of classification result.}
-    \item{prediction}{a vector of predicted labels for unremarkable genes.}
-    \item{FinalLabeling}{a dataframe of geneID with its corresponding semilabel
-        and final label.}
-    final.GO field, a list of
-    \item{GOresults}{a dataframe containing the summary of the information of GOTerms,
-                clusterNum: indicates the cluster label,
-                GOtype: indicates the test directions plut ontology,
-                GOID: unique GO term id,
-                Pvalue: the p-value of hypergeometric test for the GO term,
-                OddsRatio: the odds ratio of the GO term,
-                ExpCount: expected count value for genes associated the GO term,
-                Count: actual count of the genes associated to the GO term in the cluster,
-                Size: actual size of the genes associated to the GO term in the entire geneIDs,
-                Term: description of the GO term.}
+       \item{\code{initial.GO}}{ List containing initial gene ontology (GO) information:}
+    \itemize{
+        \item{\code{GOresults}}{ DataFrame summarizing GO term information. Includes clusterNum, GOtype, GOID, Pvalue, OddsRatio, ExpCount, Count, Size, and Term.}
+        \item{\code{FinalGOTermGenes}}{ List of geneIDs associated with each GO term per cluster.}}
 
-    \item{FinalGOTermGenes}{a list containing the geneIDs of each GOTerms per cluster.}
+    \item{\code{semiLabeling}}{ List containing semilabeling information:}
+    \itemize{
+        \item{\code{cutoff}}{ Numeric (0,1) indicating selected cutoff for significant GO terms.}
+        \item{\code{geneLabel}}{ DataFrame with geneID and its corresponding cluster label if remarkable, otherwise NA.}}
 
+    \item{\code{semiSupervised}}{ List containing semi-supervised classification information:}
+    \itemize{
+        \item{\code{semiSupervised}}{ Object of classification result.}
+        \item{\code{prediction}}{ Vector of predicted labels for unremarkable genes.}
+        \item{\code{FinalLabeling}}{ DataFrame of geneID with its corresponding semilabel and final label.}}
 
+    \item{\code{final.GO}}{ List containing final gene ontology (GO) information:}
+    \itemize{
+        \item{\code{GOresults}}{ DataFrame summarizing GO term information. Includes \code{clusterNum}, \code{GOtype}, \code{GOID}, \code{Pvalue}, \code{OddsRatio}, \code{ExpCount}, \code{Count}, \code{Size}, and \code{Term}.}
+        \item{\code{ FinalGOTermGenes}}{List of geneIDs associated with each GO term per cluster.}}
+
+  }
 }
+
+
 
 \references{
     \href{https://arxiv.org/abs/2209.10545}{Aghaieabiane, N and Koutis, I (2022) SGCP: A semi-supervised pipeline for gene clustering using self-training approach in gene co-expression networks}

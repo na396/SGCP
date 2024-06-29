@@ -1,20 +1,20 @@
 %  plot jitter
 \name{SGCP_plot_jitter}
 \alias{SGCP_plot_jitter}
-\title{Jitter Plot Of Gene Ontology Enrichment p-values In SGCP Pipeline}
+\title{P-value jitter chart for gene ontology enrichment in the SGCP pipeline.}
 \description{
-    Plots the jitter plot of gene ontology enrchment p-values in SGCP pipeline.
+    Generates a jitter chart illustrating the cluster gene ontology enrichment in the SGCP pipeline.
 }
 \usage{
     SGCP_plot_jitter(df, tit = "p-values Distribution",
                     xname = "module", yname = "-log10 p-value", ps = 3)
 }
 \arguments{
-    \item{df}{the `GOresults` dataframe returned by geneOntology function in SGCP pipeline }
-    \item{tit}{plot title, default "p-values Distribution"}
-    \item{xname}{x-axis title, default "module"}
-    \item{yname}{y-axis title, default either "-log10 p-value"}
-    \item{ps}{a numeric for point size, default 3}
+    \item{df}{The \code{GOresults} dataframe returned by the \code{geneOntology} function in the SGCP pipeline.}
+    \item{tit}{Plot title (default: "p-values Distribution")}
+    \item{xname}{X-axis title (default: "module")}
+    \item{yname}{Y-axis title (default: "-log10 p-value")}
+    \item{ps}{Numeric value for point size (default: 3)}
 }
 
 

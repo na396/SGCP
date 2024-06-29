@@ -1,19 +1,19 @@
 %  plot conductance
 \name{SGCP_plot_conductance}
 \alias{SGCP_plot_conductance}
-\title{Plots Cluster Conductance Index In SGCP Pipeline}
+\title{Cluster conductance index bar chart in the SGCP Pipeline}
 \description{
-    Plots the cluster conductance index per cluster in SGCP pipeline.
+    Generates a bar chart displaying the cluster conductance index in the SGCP pipeline.
 }
 \usage{
     SGCP_plot_conductance(conduct, tit = "Clustering Conductance Index",
                         xname = "cluster", yname = "conductance")
 }
 \arguments{
-    \item{conduct}{conductance field returned by clustering function in SGCP pipeline}
-    \item{tit}{plot title, default "Clustering Conductance Index"}
-    \item{xname}{x-axis title, default "cluster"}
-    \item{yname}{y-axis title, default "conductance"}
+    \item{conduct}{The conductance field returned by the \code{clustering} function in the SGCP pipeline.}
+    \item{tit}{Plot title (default: "Clustering Conductance Index")}
+    \item{xname}{X-axis title (default: "cluster")}
+    \item{yname}{Y-axis title (default: "conductance")}
 }
 
 

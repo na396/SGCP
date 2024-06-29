@@ -1,38 +1,25 @@
 % semi-labeling
 \name{semiLabeling}
 \alias{semiLabeling}
-\title{Performs Gene Semi-labeling step In SGCP Pipeline}
+\title{Performs gene semi-labeling step in the SGCP pipeline}
 \description{
-    Peforms Semi-labeling step and indentifies remarkable and unremarkable genes in SGCP pipeline. It collects all gene ontology (GO) terms from all clusters and pick the terms in top 0.1 percent. It considered the genes associated to those terms as remarkable, and the remaining as unremarkable.
+    Performs the Semi-labeling step in the SGCP pipeline to identify remarkable and unremarkable genes. This step involves collecting all gene ontology (GO) terms from all clusters and selecting terms in the top 0.1 percent. Genes associated with these terms are considered remarkable, while the remaining genes are categorized as unremarkable.
 }
 \usage{
     semiLabeling(geneID, df_GO, GOgenes, cutoff = NULL,
                 percent = 0.10, stp = 0.01)
 }
 \arguments{
-    \item{geneID}{a vector containing the genes IDs of size n,
-                where n is the number of genes.}
-    \item{df_GO}{GOresults dataframe returned by geneOntology function,
-                consists the information of GO terms the clusters.}
-    \item{GOgenes}{FinalGOTermGenes list returedn by geneOntology function,
-                is a list of genes associated to the GO Terms per each cluster.}
-    \item{cutoff}{a numeric in (0, 1) default NULL,
-                is a base line for GO term significancy.}
-    \item{percent}{a number in (0,1) default 0.1,
-                indicate the percentile for finding top GO terms.}
-    \item{stp}{a number in (0,1) default 0.01,
-                indicates increasing value to be added to percent parameter.}
+    \item{geneID}{A vector containing gene IDs, where n is the number of genes.}
+    \item{df_GO}{The \code{GOresults} dataframe returned by the \code{geneOntology} function, containing information on GO terms in the clusters.}
+    \item{GOgenes}{The \code{FinalGOTermGenes} list returned by the \code{geneOntology} function, listing genes associated with GO terms for each cluster.}
+    \item{cutoff}{A numeric value in (0, 1) (default: NULL), serving as a baseline for GO term significance.}
+    \item{percent}{A numeric value in (0, 1) (default: 0.1), indicating the percentile for selecting top GO terms.}
+    \item{stp}{A numeric value in (0, 1) (default: 0.01), increment added to the \code{percent} parameter for stepwise selection of top GO terms.}
     }
 
 \details{
-Gene associated to the GO terms more significant than cutoff value are remarkable.
-If cutoff value is NULL, SGCP will find the cutoff depend on the GO terms significant
-level. Otherwise, SGCP picks the top percent (by default 0.1) GO terms from all
-clusters collectively, and consider the genes associated to those as remakable.
-If all remarkable genes come from a single cluster,
-then SGCP will increase the precent by 0.01 to find the remarkable and
-unremarkable genes. It repeats this process until all remarkable genes come from
-at least two clusters.
+Genes associated with GO terms more significant than the cutoff value are considered remarkable. If the cutoff value is \code{NULL}, SGCP determines the cutoff based on the significance level of the GO terms. Otherwise, SGCP selects the top percent (default: 0.1) of GO terms from all clusters combined, considering genes associated with these terms as remarkable. If all remarkable genes originate from a single cluster, SGCP incrementally increases the percent parameter by 0.01 to identify both remarkable and unremarkable genes. This process continues until remarkable genes originate from at least two clusters.
 }
 
 \value{

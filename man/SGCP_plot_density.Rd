@@ -1,9 +1,9 @@
 %  plot density
 \name{SGCP_plot_density}
 \alias{SGCP_plot_density}
-\title{Density Plot Of Gene Ontology Enrichment p-values In SGCP Pipeline}
+\title{Visualization of gene ontology term p-value distribution in the SGCP pipeline}
 \description{
-    Plots the density plot of gene ontology enrchment p-values in SGCP pipeline.
+    Generates a density chart displaying p-values of gene ontology terms in the SGCP pipeline.
 }
 \usage{
     SGCP_plot_density(df, tit = "p-values Density",
@@ -11,10 +11,10 @@
 
 }
 \arguments{
-    \item{df}{the `GOresults` dataframe returned by geneOntology function in SGCP pipeline }
-    \item{tit}{plot title, default "p-values Density"}
-    \item{xname}{x-axis title, default "module"}
-    \item{yname}{y-axis title, default either "-log10 p-value"}
+    \item{df}{The \code{GOresults} dataframe returned by the \code{geneOntology} function in the SGCP pipeline.}
+    \item{tit}{Plot title (default: "p-values Density")}
+    \item{xname}{X-axis title (default: "module")}
+    \item{yname}{Y-axis title (default: "-log10 p-value")}
 }
 
 

@@ -40,14 +40,6 @@ Let's start.
 library(SGCP)
 ```
 
-```{r, message=FALSE, warning=FALSE}
-if(packageVersion("ggplot2")!='3.4.4'){
-    require(devtools)
-    install_version("ggplot2", version = "3.4.4", repos = "http://cran.us.r-project.org")
-}
-
-```
-
 ## `SGCP` General Input
 
 `SGCP` requires three main inputs: gene expression data, gene identifiers, and a genome-wide annotation database.
@@ -221,7 +213,7 @@ For a comprehensive description of each parameter, refer to the help documentati
 Below is an example of how to call this function. Due to its computation time (up to `15` minutes), the result has been precomputed and stored as `sgcp`, with the function call commented out. To run it yourself, uncomment the function call. In this example, the `sil` parameter is set to TRUE to compute the gene silhouette index.
 
 ```{r, message=TRUE, warning=FALSE}
-# sgcp <- ezSGCP(expData = expData, geneID = geneID, annotation_db = annotation_db, 
+# sgcp <- ezSGCP(expData = expData, geneID = geneID, annotation_db = annotation_db,
 #               eff.egs = FALSE , saveOrig = FALSE, sil = TRUE, hm = NULL)
 data(sgcp)
 summary(sgcp, show.data=TRUE)
@@ -481,12 +473,13 @@ The __Network Clustering__ step is implemented using `clustering` function, whic
 Uncomment and run the following code snippet to execute the function. Since it may take some time, the results are stored in `resClus`.
 
 ```{r, message=TRUE, warning=FALSE}
-# resClus <- clustering(adjaMat = resAdja, geneID = geneID, annotation_db = annotation_db, 
+# resClus <- clustering(adjaMat = resAdja, geneID = geneID, annotation_db = annotation_db,
 #                       eff.egs = FALSE , saveOrig = FALSE, sil = TRUE)
 
 data(resClus)
 summary(resClus)
 # lets drop noisy genes from expData
+
 geneID <- resClus$geneID
 if(length(resClus$dropped.indices)>0 ){ expData <- expData[-resClus$dropped.indices, ]}
 

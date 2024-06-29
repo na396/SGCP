@@ -1,38 +1,29 @@
 % semi-supervised
 \name{semiSupervised}
 \alias{semiSupervised}
-\title{Performs Semi-supervised step In SGCP Pipeline}
+\title{Performs the semi-supervised step in the SGCP pipeline}
 \description{
-    Performs semi-supervised classification step in SGCP pipline. It takes the transformed matrix from clustering function along with gene semi-labels from semiLabeling function, and use the labeled (remarkable) genes as the training set to trian either "k nearest neighbor" or "logistic regression" model and make prediction for unlabeled (unremarkable genes). At this step, final modules are produced.
+    Performs the semi-supervised classification step in the SGCP pipeline. It utilizes the transformed matrix from the \code{clustering} function along with gene semi-labels from the \code{semiLabeling} function. The labeled (remarkable) genes serve as the training set to train either a "k-nearest neighbor" or "logistic regression" model. The trained model then predicts labels for unlabeled (unremarkable) genes, resulting in the final modules.
 }
 \usage{
     semiSupervised(specExp, geneLab, model = "knn", kn = NULL)
 }
 \arguments{
-    \item{specExp}{matrix or dataframe with genes in rows and features in columns,
-                this is Y matrix from clustering function output.}
-    \item{geneLab}{a dataframe returned by semiLabeling function,
-                contains the geneID and its corresponding label if is remarkable
-                otherwise NA.}
-    \item{model}{either "knn" or "lr" for classification model,
-                knn: k nearest neighbors,
-                lr: logistic regression.}
-    \item{kn}{an integer default NULL indicating the number of neighbors in knn,
-            if kn is NULL, then
-            kn = 20 : (20 + 2 * k) if 2 * k < 30 otherwise 20 : 30, where
-            k is the numbber of remarkable cluster}
-}
+    \item{specExp}{Matrix or dataframe where genes are in rows and features are in columns, representing the Y matrix from \code{clustering} function output.}
+    \item{geneLab}{A dataframe returned by the \code{semiLabeling} function, containing geneIDs and their corresponding labels (remarkable or NA).}
+    \item{model}{Classification model type: "knn" for k-nearest neighbors or "lr" for logistic regression.}
+    \item{kn}{An integer (default: NULL) indicating the number of neighbors in k-nearest neighbors (knn) model. If kn is \code{NULL}, the default value is determined by: kn = 20 if 2 * k < 30, otherwise kn = 20 : 30, where k is the number of remarkable clusters.}
+    }
 
 \details{
-remarkable clusters are the clusters that have at least one remarkable gene.
+Remarkable clusters are defined as clusters that contain at least one remarkable gene.
 }
 
 
 \value{
-    \item{semiSupervised}{an object of caret train class.}
-    \item{prediction}{a vector of predicted labels for unremarkable genes.}
-    \item{FinalLabeling}{a dataframe of geneID with its corresponding semilabel
-        and final label.}
+    \\item{semiSupervised}{An object of the caret train class representing the semi-supervised classification model.}
+    \item{prediction}{A vector containing predicted labels for unremarkable genes.}
+    \item{FinalLabeling}{A dataframe containing geneIDs along with their corresponding semi-labels and final labels.}
 
 }
 

@@ -1,19 +1,19 @@
 %  plot heatMap
 \name{SGCP_plot_heatMap}
 \alias{SGCP_plot_heatMap}
-\title{Plots Adjacency Matrix HeatMap In SGCP Pipeline}
+\title{Adjacency matrix heatmap in the SGCP pipeline}
 \description{
-    Plots the HeatMap of Adjacency Matrix (Network) in SGCP pipeline.
+    Generates a Heatmap of the the adjacency matrix (network) in the SGCP pipeline.
 }
 \usage{
     SGCP_plot_heatMap(m, tit = "Adjacency Heatmap",
         xname = "genes", yname = "genes")
 }
 \arguments{
-    \item{m}{an adjacency matrix returned by adjacencyMatrix function in SGCP pipeline, or must be a matrix, symmetric, with values in (0, 1) and zero diagonal}
-    \item{tit}{plot title, default "Adjacency Heatmap"}
-    \item{xname}{x-axis title, default "genes"}
-    \item{yname}{y-axis title, default "genes"}
+    \item{m}{An adjacency matrix returned by the \code{adjacencyMatrix} function in the SGCP pipeline, or any symmetric matrix with values in (0, 1) excluding the diagonal.}
+    \item{tit}{Plot title (default: "Adjacency Heatmap")}
+    \item{xname}{X-axis title (default: "genes")}
+    \item{yname}{Y-axis title (default: "genes")}
 }
 
 

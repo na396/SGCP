@@ -1,7 +1,7 @@
 % gene ontology
 \name{geneOntology}
 \alias{geneOntology}
-\title{Performs Gene Ontology Enrichment step In SGCP Pipeline}
+\title{Performs gene ontology enrichment step in the SGCP pipeline.}
 \description{
     It performs gene ontology enrichment step GOstat package in SGCP pipeline. It takes the entire genes in the input with their labels, along with annotation_db to perform gene ontology enrichment for each set of genes that have similar label.
 }

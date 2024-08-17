@@ -1,15 +1,15 @@
 
-# SGCP : A semi-supervised pipeline for gene clustering using self-training approach in gene co-expression networks, [preprint](https://bioc.ism.ac.jp/packages/devel/bioc/html/SGCP.html).
+# SGCP : A semi-supervised pipeline for gene clustering using self-training approach in gene co-expression networks, [link]([https://bioc.ism.ac.jp/packages/devel/bioc/html/SGCP.html](https://link.springer.com/article/10.1186/s12859-024-05848-w)).
 
 ## SGCP Introduction
 Self-training Gene Clustering Pipeline (`SGCP`) is a framework for gene co-expression network construction and analysis. The goal in these networks is to group the genes in a way that those with similar expression pattern fall within the same network cluster, commonly called module. `SGCP` consists of multiple novel steps that enable the computation of highly enriched modules in an unsupervised manner. But unlike all existing frameworks, it further incorporates a novel step that leverages Gene Ontology (GO) information in a semi-supervised clustering method that further improves the quality of the computed modules. `SGCP` results in highly enriched modules. 
 
 ## SGCP Publication
-SGCP is under review. The preprint is available at [arXiv](https://arxiv.org/abs/2209.10545). 
+SGCP is under review. The preprint is available at [BMC Bioinformatics]([https://link.springer.com/article/10.1186/s12859-024-05848-w)). 
 
 ## SGCP Installation
 For instruction and steps please follow SGCP manual at its 
-[Bioconductor page](https://bioconductor.org/packages/release/bioc/html/SGCP.html). You can install the most updated SGCP through the GitHub repository as follow.
+[Bioconductor page]([https://bioconductor.org/packages/release/bioc/html/SGCP.html](https://bioconductor.org/packages/release/bioc/html/SGCP.html)). You can install the most updated SGCP through the GitHub repository as follow.
 
 ```{r}
 #install.packages("devtools")

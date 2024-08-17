@@ -24,7 +24,7 @@
   \item{adja}{A symmetric matrix of dimension n * n representing the adjacency matrix, where n is the number of genes. Values range in (0, 1) with a zero diagonal.}
 }
 \references{
-    \href{https://arxiv.org/abs/2209.10545}{Aghaieabiane, N and Koutis, I (2022) SGCP: A semi-supervised pipeline for gene clustering using self-training approach in gene co-expression networks}
+    \href{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-024-05848-w}{Aghaieabiane, N and Koutis, I (2024) SGCP: a spectral self-learning method for clustering genes in co-expression networks}
 }
 
 \seealso{

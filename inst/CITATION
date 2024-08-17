@@ -1,14 +1,14 @@
 citHeader("To cite SGCP in publications use:")
 
 citEntry(entry="article",
-         title = "SGCP: A semi-supervised pipeline for gene clustering using self-training approach in gene co-expression networks",
+         title = "SGCP: a spectral self-learning method for clustering genes in co-expression networks",
          author = personList( as.person("Niloofar Aghaieabiane"),
                               as.person("Ioannis Koutis")),
-         year = 2022,
-         journal = "arXiv",
-         url = "https://arxiv.org/abs/2209.10545",
+         year = 2024,
+         journal = "BMC Bioinformatics",
+         url = "https://link.springer.com/article/10.1186/s12859-024-05848-w",
          textVersion =
-             paste("Niloofar Aghaieabiane and Ioannis Koutis (2022):",
-                   "SGCP: A semi-supervised pipeline for gene clustering using self-training approach in gene co-expression networks",
-                   "arXiv, ",
-                   "URL:https://arxiv.org/abs/2209.10545" ) )
+             paste("Niloofar Aghaieabiane and Ioannis Koutis (2024):",
+                   "SGCP: a spectral self-learning method for clustering genes in co-expression networks",
+                   "BMC Bioinformatics, ",
+                   "URL:https://link.springer.com/article/10.1186/s12859-024-05848-w" ) )

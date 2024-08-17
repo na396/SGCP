@@ -187,5 +187,3 @@ print(head(geneID))
 
 annotation_db = "org.Hs.eg.db" 
 ```
-
->>>>>>> c5c8fc17de1a8c18f0d38ce39d723ad56e4fe0c4

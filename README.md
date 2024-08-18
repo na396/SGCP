@@ -73,7 +73,7 @@ workingDir = "."
 setwd(workingDir)
 ```
 
-First, we need to download the gene expression file. The R package `GEOquery` is used to obtain gene expression data from the [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/). For detailed information on how to use GEOquery, refer to the [GEOquery guide](https://bioconductor.org/packages/release/bioc/vignettes/GEOquery/inst/doc/GEOquery.html). 
+First, we need to download the gene expression file. The R package `GEOquery` is used to obtain gene expression data from the [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/). For detailed information on how to use `GEOquer`y, refer to the [GEOquery guide](https://bioconductor.org/packages/release/bioc/vignettes/GEOquery/inst/doc/GEOquery.html). 
 
 
 To download the expression file for `GSE181225`, visit its [Gene Expression Omnibus page](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE181225). On the page, locate the file` GSE181225_LNCaP_p57_VO_and_p57_PIM1_RNA_Seq_normalizedCounts.txt.gz` in the `Supplementary files` section, which contains the normalized gene expression data. Download this `supplementary file` and save it to the directory specified by `baseDir`.

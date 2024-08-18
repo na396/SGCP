@@ -2,7 +2,7 @@
 
 
 ## SGCP Introduction
-Self-training Gene Clustering Pipeline (`SGCP`) is a framework for gene co-expression network construction and analysis. The goal in these networks is to group the genes in a way that those with similar expression pattern fall within the same network cluster, commonly called module. `SGCP` consists of multiple novel steps that enable the computation of highly enriched modules in an unsupervised manner. But unlike all existing frameworks, it further incorporates a novel step that leverages Gene Ontology (GO) information in a semi-supervised clustering method that further improves the quality of the computed modules. `SGCP` results in highly enriched modules. 
+The Self-training Gene Clustering Pipeline (`SGCP`) is an innovative framework for constructing and analyzing gene co-expression networks. Its primary objective is to group genes with similar expression patterns into cohesive clusters, often referred to as modules. SGCP introduces several novel steps that enable the computation of highly enriched gene modules in an unsupervised manner. What sets SGCP apart from existing frameworks is its integration of a semi-supervised clustering approach, which leverages Gene Ontology (GO) information. This unique step significantly enhances the quality of the resulting modules, producing highly enriched and biologically relevant clusters.
 
 ## SGCP Publication
 SGCP is under review. The preprint is available at [BMC Bioinformatics](https://link.springer.com/article/10.1186/s12859-024-05848-w). 

@@ -5,12 +5,11 @@
 The Self-training Gene Clustering Pipeline (`SGCP`) is an innovative framework for constructing and analyzing gene co-expression networks. Its primary objective is to group genes with similar expression patterns into cohesive clusters, often referred to as modules. SGCP introduces several novel steps that enable the computation of highly enriched gene modules in an unsupervised manner. What sets SGCP apart from existing frameworks is its integration of a semi-supervised clustering approach, which leverages Gene Ontology (GO) information. This unique step significantly enhances the quality of the resulting modules, producing highly enriched and biologically relevant clusters.
 
 ## SGCP Publication
-SGCP is under review. The preprint is available at [BMC Bioinformatics](https://link.springer.com/article/10.1186/s12859-024-05848-w). 
+`SGCP` is available at [BMC Bioinformatics](https://link.springer.com/article/10.1186/s12859-024-05848-w). 
 
 ## SGCP Installation
-For instruction and steps please follow SGCP manual at its 
-[Bioconductor page](https://bioconductor.org/packages/release/bioc/html/SGCP.html). You can install the most updated SGCP through the GitHub repository as follow.
-
+For detailed instructions and steps, please refer to the `SGCP` manual on
+[Bioconductor page](https://bioconductor.org/packages/release/bioc/html/SGCP.html). To install the latest version of `SGCP`, you can access the GitHub repository using the following command:
 ```{r}
 #install.packages("devtools")
 #devtools::install_github("na396/SGCP")
@@ -24,11 +23,12 @@ UTF-8
 
 ## SGCP Input
 
-`SGCP` has three main input; __expData__ , __geneID__, and __annotation_db__. __expData__ is a matrix or a dataframe of size `m*n` where `m` and `n` are the number of genes and samples respectively and it can be either DNA-microarray or RNA-seq . `SGCP` does not perform any normalization or correction for batch effects and it is assumed that these pre-processing steps have been already performed. __geneID__ a vector of gene identifier correspond to rows in __expData__. __anotation_db__ is the name of a genome wide annotation package of the organism 
-of interest for gene ontology (GO) enrichment step.`annotation_db` must be 
-installed by user prior using `SGCP`.
+`SGCP` requires three main inputs; __expData__ , __geneID__, and __annotation_db__.
+*    __expData__: This is a matrix or dataframe of size `m*n` where `m` represents the number of genes and `n` represents the number of samples. It can contain data from either DNA-microarray or RNA-seq experiments . Note that `SGCP` assumes that pre-processing steps, such as normalization and batch effect corection, have already been performed, as these are not handled by the pipeline.
+*    __geneID__: A vector of gene identifier corresponding to the rows in __expData__.
+*    __anotation_db__: The name of a genome-wide annotation package for the organism of interest, used in the gene ontology (GO) enrichment step. The `annotation_db` package must be installed by user prior to using `SGCP`.
 
-Here, are some of the important `annotation_db` along with its corresponding identifiers.
+Below are some commonly used `annotation_db` packages along with their corresponding gene identifiers for different organisms.
 
 |organism                     | annotation_db  | gene identifier         |
 |:----------------------------|:--------------:|:---------------------   | 
@@ -38,20 +38,22 @@ Here, are some of the important `annotation_db` along with its corresponding ide
 |Mus musculus (Mm)            | org.Mm.eg.db   | Entrez Gene identifiers |
 |Arabidopsis thaliana (At)    | org.At.tair.db | TAIR identifiers        |
 
-Gene expression files can be found in [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/).
+Gene expression datasets for your analysis can be obtained from the [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/), a public repository of high-throughput gene expression data.
 
 
 ### SGCP Input Cleaning
-In `SGCP`, it is assumed that genes
+In `SGCP`, the following assumptions are made about the input genes:
 
-* have expression values across all samples (i.e. no missing value).
-* have non-zero variance across all the samples.
-* have exactly one unique identifier, say geneID.
-* have GO annotation.
+* Genes must have expression values available across all samples, with no missing values.
+* Genes must exhibit non-zero variance in expression across all samples.
+* ach gene must have exactly one unique identifier, specified by __geneID__.
+* Genes must be annotated with Gene Ontology (GO) terms.
 
 
 ## SGCP Input Example
-Here, we give a brief example to `SGCP` input. To this end, we picked GSE181225 gene expression (for more information visit its [Gene Expression Omnibus page](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE181225)). Throughout this section, we need multiple packages of Bioconductor. 
+Here, we give a brief example of the `SGCP` input. For this documentation, we use the gene expression `GSE181225`. For more information visit its [Gene Expression Omnibus page](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE181225)). 
+
+Throughout this section, several Bioconductor packages will be required. Make sure to install and load them as needed to follow the example.
 
 ```{r}
 if (!require("BiocManager", quietly = TRUE))
@@ -71,7 +73,10 @@ workingDir = "."
 setwd(workingDir)
 ```
 
-In the first place, we need to download the gene expression file. GEOquery (for more information visit [GEOquery guide](https://bioconductor.org/packages/release/bioc/vignettes/GEOquery/inst/doc/GEOquery.html)) is a package in R that can be used for obtaining gene expression data from [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/). We use GEOquery to download the expression file for `GSE181225` from its [Gene Expression Omnibus page](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE181225)). As it is seen in the page, File `GSE181225_LNCaP_p57_VO_and_p57_PIM1_RNA_Seq_normalizedCounts.txt.gz` in  the `Supplementary file` section, contains the normalized gene expression. We have to download the `Supplementary file`. Please note that downloaded file can be found in `baseDir` .
+First, we need to download the gene expression file. The R package `GEOquery` is used to obtain gene expression data from the [Gene Expression Omnibus](https://www.ncbi.nlm.nih.gov/geo/). For detailed information on how to use GEOquery, refer to the [GEOquery guide](https://bioconductor.org/packages/release/bioc/vignettes/GEOquery/inst/doc/GEOquery.html). 
+
+
+To download the expression file for `GSE181225`, visit its [Gene Expression Omnibus page](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE181225). On the page, locate the file` GSE181225_LNCaP_p57_VO_and_p57_PIM1_RNA_Seq_normalizedCounts.txt.gz` in the `Supplementary files` section, which contains the normalized gene expression data. Download this `supplementary file` and save it to the directory specified by `baseDir`.
 
 ```{r}
 
@@ -80,15 +85,17 @@ library(GEOquery)
 gse = getGEOSuppFiles("GSE181225", baseDir = getwd())
 
 ```
-Now, you can see a new directory `GSE181225` which includes the expression file. Read the gene expression file. Column `Symbol` shows the gene symbols and the remaining four columns indicates the samples.
+After downloading the file, you should find a new directory named `GSE181225`, which contains the gene expression file. To proceed, read the gene expression file into R. The file has the following structure:
+*   The `Symbol` column contains the gene symbols.
+*  The remaining four columns represent different samples.
+ 
 
 ```{r}
 df = read.delim("GSE181225/GSE181225_LNCaP_p57_VO_and_p57_PIM1_RNA_Seq_normalizedCounts.txt.gz")
 head(df)
 ```
 
-
-Create __expData__, __geneID__, and __annotation_db__.
+Next, create the __expData__, __geneID__, and __annotation_db__.
 ```{r}
 geneID = df[,1]
 
@@ -97,8 +104,7 @@ rownames(expData) = geneID
 
 library(org.Hs.eg.db)
 ```
-
-Because of the __annotation_db__, gene Entrez identifier correspond to the gene symbol must be identified. To this end, we use the `select` function from `AnnotationDBi` package.
+To map gene symbols to Entrez identifiers using the __annotation_db__, you can use the `select` function from the `AnnotationDbi` package. Here’s how you can do it in R:
 
 ```{r}
 library(AnnotationDbi)
@@ -110,7 +116,8 @@ genes = AnnotationDbi::select(org.Hs.eg.db, keys = rownames(expData),
 print(dim(genes))
 head(genes)
 ```
-Dropping genes that its either `SYMBOL` or `ENTREZID` is missing.
+Remove genes with missing `SYMBOL` or `ENTREZID`.
+
 ```{r}
 genes = genes[!is.na(genes$SYMBOL), ]
 genes = genes[!is.na(genes$ENTREZID), ]
@@ -120,7 +127,7 @@ print(dim(genes))
 head(genes)
 ```
  
-Dropping genes that its either `SYMBOL` or `ENTREZID` is duplicated.
+Remove genes with duplicated `SYMBOL` or `ENTREZID`.
 ```{r}
 genes = genes[!duplicated(genes$SYMBOL),]
 genes = genes[!duplicated(genes$ENTREZID), ]
@@ -129,7 +136,7 @@ print(dim(genes))
 print(head(genes))
 ```
 
-Keeping rows in `expData` that have corresponding gene identifier in `genes`.
+Keep only rows in __expData__ that have corresponding gene identifiers present in `genes`.
 
 ```{r}
 expData = data.frame(expData, SYMBOL = rownames(expData))
@@ -143,7 +150,8 @@ expData = expData[, c(2:6)]
 print(head(expData))
 ```
 
-Dropping zero variance genes
+Remove genes with zero variance from __expData__.
+
 ```{r}
 # Dropping zero variance genes
 
@@ -158,7 +166,7 @@ if(length(zeroInd) != 0) {
 
 print(paste0("number of genes after dropping ", dim(genes)[1]))
 ```
-Dropping genes with no GO mapping.
+Remove genes with no gene ontology mapping.
 
 ```{r}
 ## Remove genes with no GO mapping

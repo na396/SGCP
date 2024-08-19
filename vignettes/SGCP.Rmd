@@ -23,10 +23,12 @@ opts_chunk$set(fig.align = 'center', fig.width = 6, fig.height = 6, dev = 'png')
 
 # Introduction
 
-The Self-training Gene Clustering Pipeline (`SGCP`) is a robust framework designed for constructing and analyzing gene co-expression networks. Its primary objective is to organize genes into clusters, or modules, based on their similar expression patterns within these networks. `SGCP` introduces several innovative steps that facilitate the identification of highly enriched modules through an unsupervised approach. What sets `SGCP` apart from existing frameworks is its incorporation of a unique semi-supervised clustering method that integrates Gene Ontology (GO) information. This additional step significantly enhances the quality of the identified modules. `SGCP` ultimately produces modules that are notably enriched with relevant biological insights. For a comprehensive overview of `SGCP`, including detailed methodology and results, refer to the preprint of the manuscript available [here](https://arxiv.org/abs/2209.10545).
+The Self-training Gene Clustering Pipeline (`SGCP`) is a robust framework designed for constructing and analyzing gene co-expression networks. Its primary objective is to group genes with similar expression patterns into cohesive clusters, often referred to as modules. `SGCP` introduces several novel steps that enable the computation of highly enriched gene modules in an unsupervised manner. What sets `SGCP` apart from existing frameworks is its integration of a semi-supervised clustering approach, which leverages Gene Ontology (GO) information. This unique step significantly enhances the quality of the resulting modules, producing highly enriched and biologically relevant clusters.
+
+For a comprehensive understanding of `SGCP`, including detailed methodology and results, refer to the manuscript available [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-024-05848-w).
 
 ## `SGCP` installation
-To install the package `SGCP` package and its dependencies, follow these steps. For more information please visit [here](https://github.com/na396/SGCP)). In this manual guide, `SGCP` also relies on two more packages; `SummarizedExperiment` and `org.Hs.eg.db`.
+To install the package `SGCP` package and its dependencies, follow these steps. For more information please visit [here](https://github.com/na396/SGCP)). In this guide, we demonstrate the application of SGCP using two key packages: `SummarizedExperiment` and `org.Hs.eg.db`.
 
 ```{r, eval=FALSE}
 library(BiocManager)
@@ -34,7 +36,7 @@ BiocManager::install('SGCP')
 ```
 
 
-Let's start.
+To get started, use the following code.
 
 ```{r, message=FALSE, warning=FALSE}
 library(SGCP)
@@ -45,12 +47,11 @@ library(SGCP)
 `SGCP` requires three main inputs: gene expression data, gene identifiers, and a genome-wide annotation database.
 
 
-* __expData__:  A matrix or dataframe of size `m*n`, where `m` is the number of genes and `n` is the number of samples. It can be either DNA-microarray or RNA-seq data. In `expData`, rows represent genes, columns represent samples, and the entry at position `(i, j)` is the expression value for gene `i` in sample `j.` `SGCP` does not perform normalization or batch effect correction; these preprocessing steps should be completed beforehand.
+* __`expData`__:  A matrix or dataframe of size `m*n`, where `m` is the number of genes and `n` is the number of samples. It can be either DNA-microarray or RNA-seq data. In `expData`, rows represent genes, columns represent samples, and the entry at position `(i, j)` is the expression value for gene `i` in sample `j.`  Note that `SGCP` assumes that pre-processing steps, such as normalization and batch effect correction, have already been performed, as these are not handled by the pipeline.
 
+* __`geneID`__: A vector of size m, where each entry at index `i` denotes the gene identifier for gene `i`. There is a one-to-one correspondence between the rows in `expData` and the entries in the `geneID` vector, meaning index `i` in `geneID` corresponds to row `i` in `expData.`
 
-* __geneID__: A vector of size m, where each entry at index `i` denotes the gene identifier for gene `i`. There is a one-to-one correspondence between the rows in `expData` and the entries in the geneID vector, meaning index `i` in geneID corresponds to row i in `expData.`
-
-* __annotation_db__: The name of a genome-wide annotation package for the organism of interest, used for the gene ontology (GO) enrichment step. The `annotation_db` must be installed by the user before using `SGCP.` 
+* __`annotation_db`__: The name of a genome-wide annotation package for the organism of interest, used for the gene ontology (GO) enrichment step. The `annotation_db` must be installed by the user before using `SGCP.` 
 
 Here, are some important `annotation_db` along with its corresponding identifiers.
 
@@ -63,30 +64,31 @@ Here, are some important `annotation_db` along with its corresponding identifier
 |Arabidopsis thaliana (At)    | org.At.tair.db | TAIR identifiers        |
 
 
-Note that genes:
-* must have expression values across all samples (i.e. no missing value).
-* must have non-zero variance across all the samples.
-* must have exactly one unique identifier, say geneID.
-* must have GO annotation.
+In `SGCP`, the following assumptions are made about the input genes:
+
+* Genes must have expression values available across all samples, with no missing values.
+* Genes must exhibit non-zero variance in expression across all samples.
+* each gene must have exactly one unique identifier, specified by `geneID`.
+* Genes must be annotated with Gene Ontology (GO) terms.
 
 
-Note that `SGCP` depends on [GOstats](https://bioconductor.org/packages/release/bioc/html/GOstats.html) 
-for GO enrichment, thus (_geneID_) and (_annotation_db_) must be compatible to 
-this package standard.
+Note that `SGCP` relies on the on [GOstats](https://bioconductor.org/packages/release/bioc/html/GOstats.html) package
+for GO enrichment analysis. Therefore, both `geneID` and `annotation_db` must  adhere to the standards required by `GOstats`.
 
 ### `SGCP` Input Example
 
 For illustrative purposes we will use an example of a gene expression provided with `SGCP`.
 This dataset originally represent 5000 genes in 57 samples for Homo sapiens, 
-for more information see ([Cheng et al.](https://www.sciencedirect.com/science/article/abs/pii/S0010482520303061?via%3Dihub)) Here, to ease the computation, 1000 genes with the highest variance and 5 samples have been selected from the original dataset.
+for more information see ([Cheng et al.](https://www.sciencedirect.com/science/article/abs/pii/S0010482520303061?via%3Dihub)). For computational efficiency, we have selected 1000 genes with the highest variance and 5 samples from the original dataset.
 
 For this input example we need to install the following packages.
 
 The input example is organized as an object of `SummarizedExperiment`. The `assay` field contains the expression matrix, where rows correspond to genes and columns correspond to samples. The `rowData` field denotes the gene Entrez IDs. There is a one-to-one correspondence between rows in the assay and `rowData` fields; thus, `rowData` at index `i` shows the gene Entrez ID for the gene at row `i` in the assay field. We call this object `cheng.`
 
-
 The `annotation_db` used is `org.Hs.eg.db`, which must be installed if it is not already. For installation, see
-[link](https://bioconductor.org/packages/release/data/annotation/html/org.Hs.eg.db.html). Let's look at the input example.
+[link](https://bioconductor.org/packages/release/data/annotation/html/org.Hs.eg.db.html). 
+
+Now, let's examine the input example.
 
 
 ```{r, message=FALSE, warning=FALSE}
@@ -142,12 +144,12 @@ annotation_db <- "org.Hs.eg.db"
 
 2. __Network Clustering__ step (`clustering` function) 
     * `kopt`: An integer, default is `NULL`. Denotes the optimal number of clusters `k` by the user.
-    * `method`:  Either "relativeGap", "secondOrderGap", "additiveGap", or `NULL` (defualt), 
+    * `method`:  Either "relativeGap", "secondOrderGap", "additiveGap", or `NULL` (default), 
     Defines the method for number of cluster.
-    * `func.GO`: A function for gene ontology validation, default is `sum.`
-    * `func.conduct`: A function for conductance validation, default is `min.`
-    * `maxIter`: An integer identifying the maximum number of iteration in `kmeans.`
-    * `numStart`: An integer identifying the number of starts in `kmeans.`
+    * `func.GO`: A function for gene ontology validation, default is `sum`.
+    * `func.conduct`: A function for conductance validation, default is `min`.
+    * `maxIter`: An integer identifying the maximum number of iteration in `kmeans`.
+    * `numStart`: An integer identifying the number of starts in `kmeans`.
     * `saveOrig`: Boolean, default `TRUE`. If `TRUE`, keeps the transformed matrix.
     * `n_egvec`: Either "all" or an integer, default is `100`. Indicates the 
     number of columns of transformed matrix to be kept.
@@ -157,13 +159,13 @@ annotation_db <- "org.Hs.eg.db"
 3. __Gene Ontology Enrichment__ step (`geneOntology` function)
     * `direction`: Test direction, default is c("over", "under"), for over-represented, or under-represented                  GO terms
     * `ontology`: GO ontologies, default c("BP", "CC", "MF"), where BP stands for Biological Process, CC for Cellular Component, and MF for Molecular Function.
-    * `hgCutoff`: A numeric value in `0` and `1`, default is `0.05`. GO terms with p-values smaller than                `hgCutoff`are retained.
+    * `hgCutoff`: A numeric value between `0` and `1`, default is `0.05`. GO terms with p-values smaller than                `hgCutoff` are retained.
     * `cond`: Boolean, default is `TRUE`. If `TRUE`, performs conditional hypergeometric test.
     
 4. __Gene Semi-labeling__ step (`semiLabeling` function)
-    * `cutoff`: a numeric in 0 and 1, default is  `NULL`. This baseline is used to determined the significance of GO terms, distinguishing between remarkable and unremarkable genes.
-    * `percent`: a number in 0 and 1, default is `0.1`. Indicates the percentile used to identify top GO terms.
-    * `stp`: a number in 0 and ,1 default is `0.01`. Specifies the increment added to the `percent` parameter.
+    * `cutoff`: a numeric between 0 and 1, default is  `NULL`. This baseline is used to determined the significance of GO terms, distinguishing between remarkable and unremarkable genes.
+    * `percent`: a number between 0 and 1, default is `0.1`. Indicates the percentile used to identify top GO terms.
+    * `stp`: a number between 0 and ,1 default is `0.01`. Specifies the increment added to the `percent` parameter.
     
 5. __Semi-supervised Classification__ step (`semiSupevised` function)
     * `model`: Either "knn" for k-nearest neighbors or "lr" for logistic regression, specifying the classification model.
@@ -172,7 +174,7 @@ annotation_db <- "org.Hs.eg.db"
 
 At the end of this step, final modules are produced. Subsequently, `SGCP` performs an additional step of Gene Ontology Enrichment on those final modules.
 
-Detailed of the steps are available in the manuscript in [SGCP](https://arxiv.org/abs/2209.10545). 
+Detailed of the steps are available in the manuscript in [SGCP](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-024-05848-w). 
 
 In __Network Construction__, user can identify of any of steps to be
 added to the network. In __Network Clustering__, `SGCP` behaves as follows; 
@@ -189,7 +191,7 @@ __Gene Semi-labeling__ step, if `cutoff` is not `NULL`, `SGCP` considers genes
 associated to GO terms more significant than$~$`cutoff`$~$ as remarkable. Otherwise, 
 `SGCP` collects all GO terms from all clusters and selects the top `percent` (default `0.1`)
 most significant GO terms among them. If genes associated to these terms 
-come from more than a single cluster, `SGCP` these genes as remarkable. 
+come from more than a single cluster, `SGCP` takes these genes as remarkable. 
 Otherwise, it increases$~$`percent`$~$to$~$`stp`$~$and repeat this process until remarkable genes 
 come from at least two clusters. In __Semi-supervised Classification__, 
 remarkable clusters are the clusters that have at least one remarkable gene.
@@ -202,15 +204,15 @@ The `ezSGCP` function implements the `SGCP` pipeline in one function. Parameters
 [here](## `SGCP` Pipeline Parameters and Workflow) with specific mappings for clarity.
 
 
-    *__Network Construction__: Parameter `calib` corresponds to `calibration`.
-    *__Network Clustering__: Parameters `method_k`, `f.GO`, `f.conduct`, `maxIteration`, and `numberStart` correspond to `method`, `func.GO`, `func.conduct`, `maxIter`, and `numStart`, respectively.
-    *__Gene Ontology Enrichment__: Parameters `dir`, `onto`, `hgCut`, and `condTest` correspond to `direction`, `ontology`, `hgCutoff`, and `cond`, respectively.
-    * __Gene Ontology Enrichment__: The boolean parameter `semilabel` controls whether `SGCP` continues to the Semi-supervised Classification step (`TRUE`) or stops after initial clusters (`FALSE`).
+* __Network Construction__: Parameter `calib` corresponds to `calibration`.
+* __Network Clustering__: Parameters `method_k`, `f.GO`, `f.conduct`, `maxIteration`, and `numberStart` correspond to `method`, `func.GO`, `func.conduct`, `maxIter`, and `numStart`, respectively.
+* __Gene Ontology Enrichment__: Parameters `dir`, `onto`, `hgCut`, and `condTest` correspond to `direction`, `ontology`, `hgCutoff`, and `cond`, respectively.
+* __Gene Ontology Enrichment__: The boolean parameter `semilabel` controls whether `SGCP` continues to the Semi-supervised Classification step (`TRUE`) or stops after initial clusters (`FALSE`).
     
-For a comprehensive description of each parameter, refer to the help documentation.
+For a comprehensive description of each parameter, refer to the [manuscript](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-024-05848-w).
 
 
-Below is an example of how to call this function. Due to its computation time (up to `15` minutes), the result has been precomputed and stored as `sgcp`, with the function call commented out. To run it yourself, uncomment the function call. In this example, the `sil` parameter is set to TRUE to compute the gene silhouette index.
+Below is an example of how to call this function. Due to its computation time (up to `15` minutes), the result has been precomputed and stored as `sgcp`, with the function call commented out. To run it yourself, uncomment the function call. In this example, the `sil` parameter is set to `TRUE` to compute the gene silhouette index.
 
 ```{r, message=TRUE, warning=FALSE}
 # sgcp <- ezSGCP(expData = expData, geneID = geneID, annotation_db = annotation_db,
@@ -390,7 +392,7 @@ As observed, `SGCP` provides detailed information at each step of its execution.
 
 > By default, SGCP operates under the assumption that users do not have prior knowledge of the exact number of clusters or the optimal method for clustering. Therefore, it utilizes gene ontology validation to establish initial clusters. We highly recommend that users evaluate SGCP using all three potential methods: "relativeGap", "secondOrderGap", and "additiveGap".
 
-`SGCP` offers visualization capabilities to users. The `SGCP_ezPLOT` function accepts the `sgcp` result from `ezSGCP`, along with `expData` and `geneID` inputs. It generates two files, an Excel spreadsheet and a PDF, depending on the initial call. Users can also retain the plotting object by setting `keep = TRUE`. In this example, we enable silhouette_in to visualize the silhouette index plot.
+`SGCP` offers visualization capabilities to users. The `SGCP_ezPLOT` function accepts the `sgcp` result from `ezSGCP`, along with `expData` and `geneID` inputs. It generates two files, an Excel spreadsheet and a PDF, depending on the initial call. Users can also retain the plotting object by setting `keep = TRUE`. In this example, we enable `silhouette_index` to visualize the silhouette index plot.
 
 ```{r, message=FALSE, warning=FALSE}
 message("PCA of expression data without label")
@@ -404,12 +406,12 @@ For a detailed explanation of parameters, please refer to the help document.
 
 The `ezSGCP` function described earlier acts as a wrapper, sequentially calling several other `SGCP` functions in the following order. Let's explore each step in detail using the [example data](### `SGCP` Input Example).
 
-1.  `adjacencyMatrix` function, performs __Network Construction__ step
-2.  `clustering` function, performs __Network Clustering__ step
-3.  `geneOntology` function, performs __Gene Ontology Enrichment__ step (produces initial clusters)
-4.  `semiLabeling` function, performs __Semi-labeling__ step
-5.  `semiSupervised` function, performs __Semi-supervised__ step 
-6.  `geneOntology` function, performs __Gene Ontology Enrichment__ step (produces final modules)
+1.  `adjacencyMatrix` function, performs __Network Construction__ step.
+2.  `clustering` function, performs __Network Clustering__ step.
+3.  `geneOntology` function, performs __Gene Ontology Enrichment__ step (produces initial clusters).
+4.  `semiLabeling` function, performs __Semi-labeling__ step.
+5.  `semiSupervised` function, performs __Semi-supervised__ step. 
+6.  `geneOntology` function, performs __Gene Ontology Enrichment__ step (produces final modules).
 
 To conserve space, let's omit the details about `sgcp`.
 ```{r, message=TRUE, warning=FALSE}
@@ -609,7 +611,7 @@ if(resClus$cv == "cvGO" || resClus$cv == "cvConductance" ){
     print(pl)}
 
 ```
-In [here](https://arxiv.org/abs/2209.10545) We observed that clusters with lower conductance indices tend to exhibit higher enrichment. This analysis confirms our observation. In the clustering function, gene ontology enrichment is compared among clusters with the minimum conductance for the methods "relativeGap" (`cluster rg1`), "secondOrderGap" (cluster `sg4`), and "additiveGap" (cluster `ag1`). Among them, cluster `rg1` shows higher enrichment. Interestingly, this cluster also demonstrates a lower conductance index compared to `ag1` and `sg4.`
+In [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-024-05848-w) We observed that clusters with lower conductance indices tend to exhibit higher enrichment. This analysis confirms our observation. In the clustering function, gene ontology enrichment is compared among clusters with the minimum conductance for the methods "relativeGap" (`cluster rg1`), "secondOrderGap" (cluster `sg4`), and "additiveGap" (cluster `ag1`). Among them, cluster `rg1` shows higher enrichment. Interestingly, this cluster also demonstrates a lower conductance index compared to `ag1` and `sg4.`
 
 In SGCP, you can also plot the silhouette index per gene if the `sil` parameter is set to `TRUE` in the clustering function.
 
@@ -627,7 +629,7 @@ The silhouette index ranges between -1 and `1`, where values closer to `1` indic
 
 ## `geneOntology` function
 The __Gene Ontology Enrichment__ step is executed using the `geneOntology` function. This function calculates gene ontology enrichment on the clusters and returns two outputs; `GOresults`, results of gene ontology enrichment and `FinalGOTermGenes`, a list that maps gene IDs to the corresponding GO terms identified in `GOresults.`
-r
+
 Please uncomment the code above to execute the function and store the results in resInitialGO, keeping in mind that it may take some time to complete.
 
 ```{r, message=TRUE, warning=TRUE}
@@ -671,7 +673,7 @@ If you execute the code, the following information will be printed out for you.
 ## gene ontology done!..
 ```
 
-Above shows the enrichment dataframe returned from GOstats (link)[https://bioconductor.org/packages/release/bioc/html/GOstats.html] package. `clusterNum` indicates the cluster label.
+Above shows the enrichment dataframe returned from GOstats [link](https://bioconductor.org/packages/release/bioc/html/GOstats.html) package. `clusterNum` indicates the cluster label.
 
 `SGCP` offers four functions to visualize gene ontology enrichment results: `SGCP_plot_jitter`, `SGCP_plot_density`, `SGCP_plot_bar`, and `SGCP_plot_pie.` It's important to note that p-values are log-transformed in these visualizations. Therefore, higher points indicate more significant GO terms.
 
@@ -724,12 +726,12 @@ resSemiLabel <- semiLabeling(geneID = geneID,
 print(head(resSemiLabel$geneLabel))
 table(resSemiLabel$geneLabel$label)
 ```
-In the table above, genes are listed with their corresponding cluster labels if they are remarkable; otherwise, they are labeled as NA. A cluster is considered remarkable if it contains at least one remarkable gene. Therefore, both clusters shown are remarkable here. In our discussion here, we highlighted that if the number of clusters exceeds 2, `SGCP` will eliminate unremarkable clusters through the Semi-labeling and Semi-supervised steps. Genes from these clusters are reassigned to remarkable clusters. Consequently, the number of modules may decrease while module enrichment increases. These steps modify the original clusters produced by the clustering function, resulting in a different set of clusters. Therefore, `SGCP` returns two sets of results: (i) immediately after the clustering function, referred to as clusters, and (ii) after the `semiSupervised` function, referred to as modules. In our manuscript, we distinguish these as `pSGCP` and `SGCP`, respectively.
+In the table above, genes are listed with their corresponding cluster labels if they are remarkable; otherwise, they are labeled as NA. A cluster is considered remarkable if it contains at least one remarkable gene. Therefore, both clusters shown are remarkable here. In our discussion here, we highlighted that if the number of clusters exceeds 2, `SGCP` will eliminate unremarkable clusters through the **Semi-labeling** and **Semi-supervised** steps. Genes from these clusters are reassigned to remarkable clusters. Consequently, the number of modules may decrease while module enrichment increases. These steps modify the original clusters produced by the clustering function, resulting in a different set of clusters. Therefore, `SGCP` returns two sets of results: (i) immediately after the clustering function, referred to as clusters, and (ii) after the `semiSupervised` function, referred to as modules. In our manuscript, we distinguish these as `pSGCP` and `SGCP`, respectively.
 
 
 ## `semiSupervised` function
 The __Gene Semi-supervised__ step utilizes the `semiSupervised` function. The final module labeling is provided in `FinalLabeling`, which is a dataframe containing `geneIDs` with their corresponding semi-labels and final labels.
-Uncomment and run the following code to perform gene semi-supervised labeling.
+Uncomment and run the following code to perform gene **Semi-supervised** step.
 
 
 ```{r, message=TRUE, warning=TRUE}
@@ -844,7 +846,7 @@ print(pl)
 rm(pl)
 ```
 
-Comparing this result with the initial clusters, we observe a slight increase in gene ontology enrichment. We have found that when all initial clusters are remarkable, as observed here, the **Semi-labeling** and *Semi-supervised** steps do not fundamentally change the gene cluster labels, resulting in convergence of initial clusters towards final clusters. However, if initial clusters include non-significant ones, SGCP eliminates these clusters, enhancing the enrichment of remarkable clusters. Consequently, the final modules differ from the initial clusters. Further details are available in the manuscript. [SGCP manuscript](https://arxiv.org/pdf/2209.10545.pdf).
+Comparing this result with the initial clusters, we observe a slight increase in gene ontology enrichment. We have found that when all initial clusters are remarkable, as observed here, the **Semi-labeling** and **Semi-supervised** steps do not fundamentally change the gene cluster labels, resulting in convergence of initial clusters towards final clusters. However, if initial clusters include non-significant ones, SGCP eliminates these clusters, enhancing the enrichment of remarkable clusters. Consequently, the final modules differ from the initial clusters. Further details are available in the manuscript. [SGCP manuscript](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-024-05848-w).
 
 ```{r, message=TRUE, warning=FALSE} 
 rm(resClus, resInitialGO, resSemiLabel, resSemiSupervised, resFinalGO, pl)

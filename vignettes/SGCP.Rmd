@@ -44,7 +44,7 @@ library(SGCP)
 
 ## `SGCP` General Input
 
-`SGCP` requires three main inputs: gene expression data, gene identifiers, and a genome-wide annotation database.
+`SGCP` requires three main inputs: gene expression data (`expData`), gene identifiers (`geneID`), and a genome-wide annotation database (`annotation_db`).
 
 
 * __`expData`__:  A matrix or dataframe of size `m*n`, where `m` is the number of genes and `n` is the number of samples. It can be either DNA-microarray or RNA-seq data. In `expData`, rows represent genes, columns represent samples, and the entry at position `(i, j)` is the expression value for gene `i` in sample `j.`  Note that `SGCP` assumes that pre-processing steps, such as normalization and batch effect correction, have already been performed, as these are not handled by the pipeline.
@@ -138,14 +138,14 @@ annotation_db <- "org.Hs.eg.db"
     for more information see [link](https://www.frontiersin.org/articles/10.3389/fbinf.2021.704817/full).
     * `norm`: Boolean, default `TRUE`. If `TRUE` `SGCP` divides each genes (rows) by its norm2.
     * `tom`: Boolean, default `TRUE`. If `TRUE` `SGCP` adds TOM to the network.
-    * `saveAdja`: Boolean, default `FALSE`. If `TRUE`, the adjacency matrix will be saved .
+    * `saveAdja`: Boolean, default `FALSE`. If `TRUE`, the adjacency matrix will be saved.
     * `adjaNameFile`: string indicating the name of file for saving adjacency matrix.
     * `hm`: string indicates the name of file for saving adjacency matrix heat map.
 
 2. __Network Clustering__ step (`clustering` function) 
     * `kopt`: An integer, default is `NULL`. Denotes the optimal number of clusters `k` by the user.
     * `method`:  Either "relativeGap", "secondOrderGap", "additiveGap", or `NULL` (default), 
-    Defines the method for number of cluster.
+    Defines the method for finding the number of cluster.
     * `func.GO`: A function for gene ontology validation, default is `sum`.
     * `func.conduct`: A function for conductance validation, default is `min`.
     * `maxIter`: An integer identifying the maximum number of iteration in `kmeans`.
@@ -182,7 +182,7 @@ If `kopt` is not `NULL`, `SGCP` finds clusters based on `kopt`. If `kopt` is `NU
 `SGCP` picks `k` based on the selected method. If `geneID` and 
 `annotation_db` are `NULL`, `SGCP` determines the optimal method and its 
 corresponding number of cluster based on conductance validation. It selects the 
-method that `func.conduct` (default `min`) on its cluster is minimum. Otherwise, 
+method that `func.conduct` (default `min`) on its cluster is minimum. Otherwise (`kopt`, `method` are `NULL`, but `annotation_db` and `geneID` are not `NULL`), 
 `SGCP` will use gene ontology validation (default) to find the optimal method and its 
 corresponding number of clusters. It performs gene ontology enrichment 
 on the cluster with minimum conductance index per method and selects the method that 
@@ -613,7 +613,7 @@ if(resClus$cv == "cvGO" || resClus$cv == "cvConductance" ){
 ```
 In [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-024-05848-w) We observed that clusters with lower conductance indices tend to exhibit higher enrichment. This analysis confirms our observation. In the clustering function, gene ontology enrichment is compared among clusters with the minimum conductance for the methods "relativeGap" (`cluster rg1`), "secondOrderGap" (cluster `sg4`), and "additiveGap" (cluster `ag1`). Among them, cluster `rg1` shows higher enrichment. Interestingly, this cluster also demonstrates a lower conductance index compared to `ag1` and `sg4.`
 
-In SGCP, you can also plot the silhouette index per gene if the `sil` parameter is set to `TRUE` in the clustering function.
+In `SGCP`, you can also plot the silhouette index per gene if the `sil` parameter is set to `TRUE` in the clustering function.
 
 ```{r, message=TRUE, warning=FALSE}
 # checking if silhouette index is calculated
@@ -726,7 +726,7 @@ resSemiLabel <- semiLabeling(geneID = geneID,
 print(head(resSemiLabel$geneLabel))
 table(resSemiLabel$geneLabel$label)
 ```
-In the table above, genes are listed with their corresponding cluster labels if they are remarkable; otherwise, they are labeled as NA. A cluster is considered remarkable if it contains at least one remarkable gene. Therefore, both clusters shown are remarkable here. In our discussion here, we highlighted that if the number of clusters exceeds 2, `SGCP` will eliminate unremarkable clusters through the **Semi-labeling** and **Semi-supervised** steps. Genes from these clusters are reassigned to remarkable clusters. Consequently, the number of modules may decrease while module enrichment increases. These steps modify the original clusters produced by the clustering function, resulting in a different set of clusters. Therefore, `SGCP` returns two sets of results: (i) immediately after the clustering function, referred to as clusters, and (ii) after the `semiSupervised` function, referred to as modules. In our manuscript, we distinguish these as `pSGCP` and `SGCP`, respectively.
+In the table above, genes are listed with their corresponding cluster labels if they are remarkable; otherwise, they are labeled as `NA`. A cluster is considered remarkable if it contains at least one remarkable gene. Therefore, both clusters shown are remarkable here. In our discussion here, we highlighted that if the number of clusters exceeds 2, `SGCP` will eliminate unremarkable clusters through the **Semi-labeling** and **Semi-supervised** steps. Genes from these clusters are reassigned to remarkable clusters. Consequently, the number of modules may decrease while module enrichment increases. These steps modify the original clusters produced by the clustering function, resulting in a different set of clusters. Therefore, `SGCP` returns two sets of results: (i) immediately after the clustering function, referred to as clusters, and (ii) after the `semiSupervised` function, referred to as modules. In our manuscript, we distinguish these as `pSGCP` and `SGCP`, respectively.
 
 
 ## `semiSupervised` function
